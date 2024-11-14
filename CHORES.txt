@@ -1,0 +1,1051 @@
+1. Implement a program for left rotation and right rotation of array by a given number k.
+#include <iostream>
+using namespace std;
+
+void leftRotate(int arr[], int n, int k) {
+    k = k % n;
+    for (int i = 0; i < k; i++) {
+        int temp = arr[0];
+        for (int j = 0; j < n - 1; j++) {
+            arr[j] = arr[j + 1];
+        }
+        arr[n - 1] = temp;
+    }
+}
+
+void rightRotate(int arr[], int n, int k) {
+    k = k % n;
+    for (int i = 0; i < k; i++) {
+        int temp = arr[n - 1];
+        for (int j = n - 1; j > 0; j--) {
+            arr[j] = arr[j - 1];
+        }
+        arr[0] = temp;
+    }
+}
+
+void displayArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+int main() {
+    int n, k, choice;
+    cout << "Enter the size of the array: ";
+    cin >> n;
+    int arr[n];
+    cout << "Enter elements of array:\n";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    cout << "Enter the number of rotations: ";
+    cin >> k;
+
+    while (true) {
+        cout << "\n1. Left Rotate\n2. Right Rotate\n0. Exit\nChoose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                leftRotate(arr, n, k);
+                cout << "Array after left rotation: ";
+                displayArray(arr, n);
+                break;
+            case 2:
+                rightRotate(arr, n, k);
+                cout << "Array after right rotation: ";
+                displayArray(arr, n);
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid option.\n";
+        }
+    }
+}
+
+
+
+2. Implement a program for addition and multiplication of two matrices using concepts of 2-D arrays.
+#include <iostream>
+using namespace std;
+
+void addMatrices(int a[10][10], int b[10][10], int r, int c) {
+    int result[10][10];
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            result[i][j] = a[i][j] + b[i][j];
+        }
+    }
+    cout << "Result of Addition:\n";
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            cout << result[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void multiplyMatrices(int a[10][10], int b[10][10], int r1, int c1, int c2) {
+    int result[10][10] = {0};
+    for (int i = 0; i < r1; i++) {
+        for (int j = 0; j < c2; j++) {
+            for (int k = 0; k < c1; k++) {
+                result[i][j] += a[i][k] * b[k][j];
+            }
+        }
+    }
+    cout << "Result of Multiplication:\n";
+    for (int i = 0; i < r1; i++) {
+        for (int j = 0; j < c2; j++) {
+            cout << result[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int r1, c1, r2, c2;
+    int a[10][10], b[10][10];
+
+    cout << "Enter rows and columns for matrix A: ";
+    cin >> r1 >> c1;
+    cout << "Enter elements of matrix A:\n";
+    for (int i = 0; i < r1; i++)
+        for (int j = 0; j < c1; j++)
+            cin >> a[i][j];
+
+    cout << "Enter rows and columns for matrix B: ";
+    cin >> r2 >> c2;
+    cout << "Enter elements of matrix B:\n";
+    for (int i = 0; i < r2; i++)
+        for (int j = 0; j < c2; j++)
+            cin >> b[i][j];
+
+    int choice;
+    while (true) {
+        cout << "\n1. Add Matrices\n2. Multiply Matrices\n0. Exit\nChoose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                if (r1 == r2 && c1 == c2)
+                    addMatrices(a, b, r1, c1);
+                else
+                    cout << "Addition not possible (dimensions mismatch).\n";
+                break;
+            case 2:
+                if (c1 == r2)
+                    multiplyMatrices(a, b, r1, c1, c2);
+                else
+                    cout << "Multiplication not possible (dimensions mismatch).\n";
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid option.\n";
+        }
+    }
+}
+
+
+3. Implement a program for addition of two polynomials using concepts of linked list.
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int coeff, power;
+    Node *next;
+};
+
+Node* createNode(int coeff, int power) {
+    Node* newNode = new Node();
+    newNode->coeff = coeff;
+    newNode->power = power;
+    newNode->next = nullptr;
+    return newNode;
+}
+
+void insert(Node* &poly, int coeff, int power) {
+    Node* newNode = createNode(coeff, power);
+    if (!poly) {
+        poly = newNode;
+        return;
+    }
+    Node* temp = poly;
+    while (temp->next) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+Node* addPolynomials(Node* poly1, Node* poly2) {
+    Node* result = nullptr;
+    while (poly1 && poly2) {
+        if (poly1->power == poly2->power) {
+            insert(result, poly1->coeff + poly2->coeff, poly1->power);
+            poly1 = poly1->next;
+            poly2 = poly2->next;
+        } else if (poly1->power > poly2->power) {
+            insert(result, poly1->coeff, poly1->power);
+            poly1 = poly1->next;
+        } else {
+            insert(result, poly2->coeff, poly2->power);
+            poly2 = poly2->next;
+        }
+    }
+    while (poly1) {
+        insert(result, poly1->coeff, poly1->power);
+        poly1 = poly1->next;
+    }
+    while (poly2) {
+        insert(result, poly2->coeff, poly2->power);
+        poly2 = poly2->next;
+    }
+    return result;
+}
+
+void displayPoly(Node* poly) {
+    while (poly) {
+        cout << poly->coeff << "x^" << poly->power;
+        poly = poly->next;
+        if (poly) cout << " + ";
+    }
+    cout << endl;
+}
+
+int main() {
+    Node* poly1 = nullptr;
+    Node* poly2 = nullptr;
+    int terms, coeff, power;
+
+    cout << "Enter number of terms in first polynomial: ";
+    cin >> terms;
+    for (int i = 0; i < terms; i++) {
+        cout << "Enter coefficient and power: ";
+        cin >> coeff >> power;
+        insert(poly1, coeff, power);
+    }
+
+    cout << "Enter number of terms in second polynomial: ";
+    cin >> terms;
+    for (int i = 0; i < terms; i++) {
+        cout << "Enter coefficient and power: ";
+        cin >> coeff >> power;
+        insert(poly2, coeff, power);
+    }
+
+    cout << "First Polynomial: ";
+    displayPoly(poly1);
+    cout << "Second Polynomial: ";
+    displayPoly(poly2);
+
+    Node* result = addPolynomials(poly1, poly2);
+    cout << "Resultant Polynomial after Addition: ";
+    displayPoly(result);
+
+    return 0;
+}
+
+
+4. Implement a program for merging a doubly linked list into another doubly linked list at alternate
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node *prev, *next;
+};
+
+void insertEnd(Node* &head, int data) {
+    Node* newNode = new Node{data, nullptr, nullptr};
+    if (!head) {
+        head = newNode;
+        return;
+    }
+    Node* temp = head;
+    while (temp->next) temp = temp->next;
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+Node* mergeAlternate(Node* head1, Node* head2) {
+    Node* merged = nullptr, *temp1 = head1, *temp2 = head2;
+    while (temp1 || temp2) {
+        if (temp1) {
+            insertEnd(merged, temp1->data);
+            temp1 = temp1->next;
+        }
+        if (temp2) {
+            insertEnd(merged, temp2->data);
+            temp2 = temp2->next;
+        }
+    }
+    return merged;
+}
+
+void sortDoublyLinkedList(Node* head) {
+    Node* current = head;
+    while (current) {
+        Node* nextNode = current->next;
+        while (nextNode) {
+            if (current->data > nextNode->data) {
+                swap(current->data, nextNode->data);
+            }
+            nextNode = nextNode->next;
+        }
+        current = current->next;
+    }
+}
+
+void displayList(Node* head) {
+    while (head) {
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+int main() {
+    Node *head1 = nullptr, *head2 = nullptr;
+    int n1, n2, data;
+
+    cout << "Enter number of elements in first list: ";
+    cin >> n1;
+    cout << "Enter elements of first list: ";
+    for (int i = 0; i < n1; i++) {
+        cin >> data;
+        insertEnd(head1, data);
+    }
+
+    cout << "Enter number of elements in second list: ";
+    cin >> n2;
+    cout << "Enter elements of second list: ";
+    for (int i = 0; i < n2; i++) {
+        cin >> data;
+        insertEnd(head2, data);
+    }
+
+    Node* merged = mergeAlternate(head1, head2);
+    cout << "Merged List (before sorting): ";
+    displayList(merged);
+
+    sortDoublyLinkedList(merged);
+    cout << "Sorted Merged List: ";
+    displayList(merged);
+
+    return 0;
+}
+
+
+positions and sorting the resultant doubly linked list.
+
+
+5. Implement railway reservation system using a circular linked list.
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Passenger {
+    string name;
+    int age;
+    Passenger* next;
+};
+
+void addPassenger(Passenger* &head, string name, int age) {
+    Passenger* newPassenger = new Passenger{name, age, nullptr};
+    if (!head) {
+        head = newPassenger;
+        head->next = head;
+        return;
+    }
+    Passenger* temp = head;
+    while (temp->next != head) temp = temp->next;
+    temp->next = newPassenger;
+    newPassenger->next = head;
+}
+
+void displayPassengers(Passenger* head) {
+    if (!head) {
+        cout << "No passengers.\n";
+        return;
+    }
+    Passenger* temp = head;
+    do {
+        cout << "Name: " << temp->name << ", Age: " << temp->age << endl;
+        temp = temp->next;
+    } while (temp != head);
+}
+
+int main() {
+    Passenger* head = nullptr;
+    int choice;
+    string name;
+    int age;
+
+    while (true) {
+        cout << "\n1. Add Passenger\n2. View Passengers\n0. Exit\nChoose an option: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "Enter passenger name: ";
+                cin >> name;
+                cout << "Enter age: ";
+                cin >> age;
+                addPassenger(head, name, age);
+                break;
+            case 2:
+                displayPassengers(head);
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid option.\n";
+        }
+    }
+}
+
+
+6. Implement 8 Queens problem using stack.
+#include <iostream>
+#include <stack>
+#include <vector>
+using namespace std;
+
+bool isSafe(vector<int> &board, int row, int col) {
+    for (int i = 0; i < row; i++) {
+        if (board[i] == col || abs(board[i] - col) == row - i)
+            return false;
+    }
+    return true;
+}
+
+void printSolution(vector<int> &board) {
+    int N = board.size();
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (board[i] == j) cout << "Q ";
+            else cout << ". ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void solve8Queens(int N) {
+    vector<int> board(N, -1);
+    stack<int> rowStack;
+    int row = 0, col = 0;
+
+    while (row < N) {
+        while (col < N && !isSafe(board, row, col)) col++;
+        if (col < N) {
+            board[row] = col;
+            rowStack.push(col);
+            row++;
+            col = 0;
+        } else {
+            if (rowStack.empty()) break;
+            row--;
+            col = rowStack.top() + 1;
+            rowStack.pop();
+        }
+        if (row == N) {
+            printSolution(board);
+            row--;
+            col = rowStack.top() + 1;
+            rowStack.pop();
+        }
+    }
+}
+
+int main() {
+    int N = 8;
+    cout << "Solutions for " << N << " Queens Problem:\n";
+    solve8Queens(N);
+    return 0;
+}
+
+
+7. Implement Tower of Hanoi problem using concept of recursion.
+#include <iostream>
+using namespace std;
+
+void towerOfHanoi(int n, char source, char destination, char auxiliary) {
+    if (n == 1) {
+        cout << "Move disk 1 from " << source << " to " << destination << endl;
+        return;
+    }
+    towerOfHanoi(n - 1, source, auxiliary, destination);
+    cout << "Move disk " << n << " from " << source << " to " << destination << endl;
+    towerOfHanoi(n - 1, auxiliary, destination, source);
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of disks: ";
+    cin >> n;
+    towerOfHanoi(n, 'A', 'C', 'B');
+    return 0;
+}
+
+
+8. Implement basic operations of priority queue for managing the appointments of patients at a hospital.
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct Patient {
+    string name;
+    int priority;
+
+    bool operator<(const Patient& other) const {
+        return priority > other.priority;
+    }
+};
+
+int main() {
+    priority_queue<Patient> pq;
+    int choice;
+    string name;
+    int priority;
+
+    while (true) {
+        cout << "\n1. Add Patient\n2. Serve Patient\n3. View Next Patient\n0. Exit\nChoose an option: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "Enter patient name: ";
+                cin >> name;
+                cout << "Enter priority (lower number = higher priority): ";
+                cin >> priority;
+                pq.push(Patient{name, priority});
+                break;
+            case 2:
+                if (!pq.empty()) {
+                    cout << "Serving patient: " << pq.top().name << endl;
+                    pq.pop();
+                } else {
+                    cout << "No patients.\n";
+                }
+                break;
+            case 3:
+                if (!pq.empty()) {
+                    cout << "Next patient: " << pq.top().name << " (Priority: " << pq.top().priority << ")" << endl;
+                } else {
+                    cout << "No patients.\n";
+                }
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid option.\n";
+        }
+    }
+}
+
+
+9. Implement FCFS and SJF scheduling in non-preemptive mode using suitable queue.
+#include <iostream>
+using namespace std;
+
+struct Process {
+    int pid;
+    int burstTime;
+    int waitingTime;
+    int turnAroundTime;
+};
+
+void calculateFCFS(Process processes[], int n) {
+    processes[0].waitingTime = 0;
+    for (int i = 1; i < n; i++) {
+        processes[i].waitingTime = processes[i - 1].waitingTime + processes[i - 1].burstTime;
+    }
+    for (int i = 0; i < n; i++) {
+        processes[i].turnAroundTime = processes[i].waitingTime + processes[i].burstTime;
+    }
+}
+
+void bubbleSortForSJF(Process processes[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (processes[j].burstTime > processes[j + 1].burstTime) {
+                swap(processes[j], processes[j + 1]);
+            }
+        }
+    }
+}
+
+void displayProcesses(Process processes[], int n) {
+    cout << "PID\tBurst Time\tWaiting Time\tTurnaround Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << processes[i].pid << "\t" << processes[i].burstTime << "\t\t" 
+             << processes[i].waitingTime << "\t\t" << processes[i].turnAroundTime << endl;
+    }
+}
+
+int main() {
+    int n, choice;
+    cout << "Enter number of processes: ";
+    cin >> n;
+    Process processes[n];
+    for (int i = 0; i < n; i++) {
+        cout << "Enter Process ID and Burst Time: ";
+        cin >> processes[i].pid >> processes[i].burstTime;
+    }
+
+    cout << "1. FCFS Scheduling\n2. SJF Scheduling\nChoose an option: ";
+    cin >> choice;
+
+    if (choice == 1) {
+        calculateFCFS(processes, n);
+    } else if (choice == 2) {
+        bubbleSortForSJF(processes, n);
+        calculateFCFS(processes, n);
+    }
+
+    displayProcesses(processes, n);
+    return 0;
+}
+
+
+10. Implement a program to check whether the given string is palindrome or not using doubly ended
+queue.
+#include <iostream>
+using namespace std;
+
+bool isPalindrome(const string& str) {
+    int left = 0;
+    int right = str.size() - 1;
+
+    while (left < right) {
+        if (str[left] != str[right]) return false;
+        left++;
+        right--;
+    }
+    return true;
+}
+
+int main() {
+    string str;
+    cout << "Enter a string to check for palindrome: ";
+    cin >> str;
+
+    if (isPalindrome(str)) {
+        cout << str << " is a palindrome.\n";
+    } else {
+        cout << str << " is not a palindrome.\n";
+    }
+
+    return 0;
+}
+
+
+11. Implement a program to store names and mobile numbers of your friends in sorted order on names.
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Friend {
+    string name;
+    string phoneNumber;
+};
+
+void insertionSort(Friend phoneBook[], int n) {
+    for (int i = 1; i < n; i++) {
+        Friend key = phoneBook[i];
+        int j = i - 1;
+        while (j >= 0 && phoneBook[j].name > key.name) {
+            phoneBook[j + 1] = phoneBook[j];
+            j--;
+        }
+        phoneBook[j + 1] = key;
+    }
+}
+
+int sentinelSearch(Friend phoneBook[], int n, const string& name) {
+    phoneBook[n].name = name; // Sentinel
+    int i = 0;
+    while (phoneBook[i].name != name) i++;
+    return (i == n) ? -1 : i;
+}
+
+int main() {
+    Friend phoneBook[100];
+    int n = 0;
+    int choice;
+    string name, phoneNumber;
+
+    while (true) {
+        cout << "\n1. Add Friend\n2. Search Friend\n0. Exit\nChoose an option: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "Enter name: ";
+                cin >> name;
+                cout << "Enter phone number: ";
+                cin >> phoneNumber;
+                phoneBook[n].name = name;
+                phoneBook[n].phoneNumber = phoneNumber;
+                n++;
+                insertionSort(phoneBook, n);
+                break;
+            case 2:
+                cout << "Enter name to search: ";
+                cin >> name;
+                int index;
+                index = sentinelSearch(phoneBook, n, name);
+                if (index != -1) {
+                    cout << "Found: " << phoneBook[index].name << ", Phone: " << phoneBook[index].phoneNumber << endl;
+                } else {
+                    cout << name << " not found.\n";
+                }
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid option.\n";
+        }
+    }
+}
+
+
+Search your friend from list using Sentinel search. Insert friend if not present in phone book.
+
+
+12. Implement a program to store percentage of second year students in array. Write a function for
+sorting array of floating point numbers in ascending order using Merge Sort.
+#include <iostream>
+using namespace std;
+
+void merge(float arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    float L[n1], R[n2];
+
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[mid + 1 + i];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(float arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of students: ";
+    cin >> n;
+    float percentages[n];
+    cout << "Enter percentages of students:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> percentages[i];
+    }
+
+    mergeSort(percentages, 0, n - 1);
+    cout << "Sorted percentages: ";
+    for (int i = 0; i < n; i++) {
+        cout << percentages[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}
+
+
+13. Scores of batsman in twelve overs needs to be stored in a table using hash function hash (key) =
+key mod overs where key is the data to be inserted into the Hash table. Write a C++ program to
+implement hash table for collision handling using separate chaining with replacement using linked list
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int key;
+    Node* next;
+};
+
+class HashTable {
+    int BUCKET;
+    Node** table;
+
+public:
+    HashTable(int b) : BUCKET(b) {
+        table = new Node*[BUCKET];
+        for (int i = 0; i < BUCKET; i++) {
+            table[i] = nullptr;
+        }
+    }
+
+    int hashFunction(int key) {
+        return key % BUCKET;
+    }
+
+    void insertItem(int key) {
+        int index = hashFunction(key);
+        Node* newNode = new Node{key, nullptr};
+        if (table[index] == nullptr) {
+            table[index] = newNode;
+        } else {
+            Node* curr = table[index];
+            Node* prev = nullptr;
+            while (curr != nullptr) {
+                if (hashFunction(curr->key) == index) {
+                    if (prev) prev->next = curr->next;
+                    else table[index] = curr->next;
+                    delete curr;
+                    break;
+                }
+                prev = curr;
+                curr = curr->next;
+            }
+            newNode->next = table[index];
+            table[index] = newNode;
+        }
+    }
+
+    void displayHashTable() {
+        for (int i = 0; i < BUCKET; i++) {
+            cout << "Bucket " << i << ": ";
+            Node* curr = table[i];
+            while (curr != nullptr) {
+                cout << curr->key << " ";
+                curr = curr->next;
+            }
+            cout << endl;
+        }
+    }
+
+    ~HashTable() {
+        for (int i = 0; i < BUCKET; i++) {
+            Node* curr = table[i];
+            while (curr != nullptr) {
+                Node* toDelete = curr;
+                curr = curr->next;
+                delete toDelete;
+            }
+        }
+        delete[] table;
+    }
+};
+
+int main() {
+    HashTable hashTable(12);
+    int data[] = {10, 5, 4, 14, 15, 20, 1, 11, 6, 16, 36, 28};
+    for (int i = 0; i < 12; i++) hashTable.insertItem(data[i]);
+
+    cout << "Hash Table (Separate Chaining with Replacement):\n";
+    hashTable.displayHashTable();
+    return 0;
+}
+
+
+for the following data :- 10, 5,4,14,15,20,1,11,6,16,36,28.
+
+
+14. Vinay has a medical shop and he wants to store information of medical stock available in a table
+using hash function hash (key) = key mod 9 where key is the data to be inserted into the Hash table.
+Write a C++ program to implement hash table for collision handling using linear probing without
+changing with replacement.
+
+PART 1:
+#include <iostream>
+using namespace std;
+
+const int TABLE_SIZE = 9;
+
+struct StockItem {
+    int key;
+    string name;
+    bool isOccupied;
+    StockItem() : key(-1), name(""), isOccupied(false) {} // Constructor to initialize empty slot
+};
+
+class HashTable {
+private:
+    StockItem table[TABLE_SIZE];
+
+    int hashFunction(int key) {
+        return key % TABLE_SIZE;
+    }
+
+public:
+    void insertItem(int key, const string& name) {
+        int index = hashFunction(key);
+
+        // If slot is occupied by a different key, find the next free slot using linear probing
+        if (table[index].isOccupied) {
+            if (table[index].key % TABLE_SIZE != index) {
+                // Replacement - move the current item to a new position
+                int origIndex = table[index].key % TABLE_SIZE;
+                int i = (origIndex + 1) % TABLE_SIZE;
+                while (table[i].isOccupied) {
+                    i = (i + 1) % TABLE_SIZE;
+                }
+                // Move the item to the new position found
+                table[i] = table[index];
+                table[index] = {key, name, true}; // Insert the new item in its hashed index
+            } else {
+                // Linear probing to find the next available position
+                int i = (index + 1) % TABLE_SIZE;
+                while (table[i].isOccupied) {
+                    i = (i + 1) % TABLE_SIZE;
+                }
+                table[i] = {key, name, true}; // Insert the item at the found position
+            }
+        } else {
+            // If no collision, insert directly
+            table[index] = {key, name, true};
+        }
+    }
+
+    void displayTable() {
+        cout << "Index\tKey\tName\n";
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            if (table[i].isOccupied) {
+                cout << i << "\t" << table[i].key << "\t" << table[i].name << endl;
+            } else {
+                cout << i << "\t" << "Empty\n";
+            }
+        }
+    }
+};
+
+int main() {
+    HashTable hashTable;
+    int choice, key;
+    string name;
+
+    while (true) {
+        cout << "\n1. Add Item to Medical Stock\n2. Display Stock Table\n0. Exit\nChoose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter Stock Key (as integer): ";
+                cin >> key;
+                cout << "Enter Stock Name: ";
+                cin >> name;
+                hashTable.insertItem(key, name);
+                break;
+            case 2:
+                hashTable.displayTable();
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
+    }
+}
+
+
+PART 2:
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int TABLE_SIZE = 9; // Size of the hash table
+
+struct Medicine {
+    int key;       // Unique identifier for the medicine
+    string name;   // Medicine name
+    int quantity;  // Quantity available
+    bool isOccupied; // Flag to indicate if a slot is occupied
+
+    Medicine() : key(-1), name(""), quantity(0), isOccupied(false) {} // Default constructor
+};
+
+// Hash function
+int hashFunction(int key) {
+    return key % TABLE_SIZE;
+}
+
+// Function to insert medicine data into the hash table using linear probing
+void insertMedicine(Medicine table[], int key, string name, int quantity) {
+    int index = hashFunction(key);
+
+    if (!table[index].isOccupied || hashFunction(table[index].key) != index) {
+        // Replace if slot is empty or if it contains an item with a different hash index
+        table[index].key = key;
+        table[index].name = name;
+        table[index].quantity = quantity;
+        table[index].isOccupied = true;
+    } else {
+        // Linear probing for finding the next available slot
+        int i = (index + 1) % TABLE_SIZE;
+        while (i != index) {
+            if (!table[i].isOccupied) {
+                table[i].key = key;
+                table[i].name = name;
+                table[i].quantity = quantity;
+                table[i].isOccupied = true;
+                return;
+            }
+            i = (i + 1) % TABLE_SIZE;
+        }
+        cout << "Table is full, unable to insert new medicine.\n";
+    }
+}
+
+// Function to display the hash table
+void displayHashTable(Medicine table[]) {
+    cout << "\nHash Table:\n";
+    cout << "Index\tKey\tName\t\tQuantity\n";
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        if (table[i].isOccupied) {
+            cout << i << "\t" << table[i].key << "\t" << table[i].name << "\t\t" << table[i].quantity << endl;
+        } else {
+            cout << i << "\tEmpty\n";
+        }
+    }
+}
+
+int main() {
+    Medicine hashTable[TABLE_SIZE];
+    int choice, key, quantity;
+    string name;
+
+    while (true) {
+        cout << "\nMenu:\n";
+        cout << "1. Insert new medicine\n";
+        cout << "2. Display hash table\n";
+        cout << "0. Exit\n";
+        cout << "Choose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter medicine key (unique ID): ";
+                cin >> key;
+                cout << "Enter medicine name: ";
+                cin.ignore();
+                getline(cin, name);
+                cout << "Enter quantity available: ";
+                cin >> quantity;
+                insertMedicine(hashTable, key, name, quantity);
+                break;
+            case 2:
+                displayHashTable(hashTable);
+                break;
+            case 0:
+                return 0;
+            default:
+                cout << "Invalid choice, please try again.\n";
+        }
+    }
+
+    return 0;
+}
