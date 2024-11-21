@@ -1,0 +1,102 @@
+#include<GL/glut.h>  // GLUT library for OpenGL functionality
+#include<math.h>     // Math library for trigonometric functions
+
+float d = 0; // Global variable to store the rotation angle
+
+// Function to initialize OpenGL settings
+void init() {
+    glClearColor(0, 0, 0, 1); // Set the background color to black (RGBA format)
+    glEnable(GL_DEPTH_TEST);  // Enable depth testing for 3D rendering
+}
+
+// Function to update the rotation angle and refresh the display
+void spin() {
+    d = d + 0.01;    // Increment the rotation angle
+    if (d > 360)     // Reset the angle to 0 if it exceeds 360 degrees
+        d = 0;
+    glutPostRedisplay(); // Request a redraw of the display
+}
+
+// Function to draw a single face of a cube
+void face(float A[], float B[], float C[], float D[]) {
+    glBegin(GL_POLYGON);   // Start drawing a polygon
+    glVertex3fv(A);        // Specify the first vertex of the face
+    glVertex3fv(B);        // Specify the second vertex of the face
+    glVertex3fv(C);        // Specify the third vertex of the face
+    glVertex3fv(D);        // Specify the fourth vertex of the face
+    glEnd();               // End drawing the polygon
+}
+
+// Function to draw a cube using its 8 vertices
+void cube(float v0[], float v1[], float v2[], float v3[], 
+          float v4[], float v5[], float v6[], float v7[]) {
+    glColor3f(1, 0, 0); // Set color to red for the front face
+    face(v0, v1, v2, v3); // Draw the front face
+
+    glColor3f(0, 1, 0); // Set color to green for the back face
+    face(v4, v5, v6, v7); // Draw the back face
+
+    glColor3f(0, 0, 1); // Set color to blue for the left face
+    face(v0, v4, v7, v3); // Draw the left face
+
+    glColor3f(1, 1, 0); // Set color to yellow for the right face
+    face(v1, v5, v6, v2); // Draw the right face
+
+    glColor3f(1, 0, 1); // Set color to magenta for the bottom face
+    face(v2, v3, v7, v6); // Draw the bottom face
+
+    glColor3f(0, 1, 1); // Set color to cyan for the top face
+    face(v0, v1, v5, v4); // Draw the top face
+}
+
+// Display function to render the spinning cube
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the color and depth buffers
+
+    // Define the 8 vertices of the cube
+    float v[8][3] = {
+        {-0.5, 0.5, 0.5},  // Front-top-left
+        {0.5, 0.5, 0.5},   // Front-top-right
+        {0.5, -0.5, 0.5},  // Front-bottom-right
+        {-0.5, -0.5, 0.5}, // Front-bottom-left
+        {-0.5, 0.5, -0.5}, // Back-top-left
+        {0.5, 0.5, -0.5},  // Back-top-right
+        {0.5, -0.5, -0.5}, // Back-bottom-right
+        {-0.5, -0.5, -0.5} // Back-bottom-left
+    };
+
+    float rv[8][3]; // Array to store the rotated vertices
+    float r;        // Variable for the rotation angle in radians
+    int i, a = 2;   // Variable `a` determines the axis of rotation
+
+    r = d * 3.14 / 180; // Convert the angle `d` from degrees to radians
+
+    // Perform rotation around the Y-axis (a == 2)
+    if (a == 2) {
+        for (i = 0; i < 8; i++) {
+            rv[i][2] = v[i][2] * cos(r) - v[i][0] * sin(r); // Rotate z-coordinate
+            rv[i][1] = v[i][1];                            // Keep y-coordinate unchanged
+            rv[i][0] = v[i][2] * sin(r) + v[i][0] * cos(r); // Rotate x-coordinate
+        }
+    }
+
+    // Draw the cube using the rotated vertices
+    cube(rv[0], rv[1], rv[2], rv[3], rv[4], rv[5], rv[6], rv[7]);
+
+    glutSwapBuffers(); // Swap the front and back buffers for smooth rendering
+    glFlush();         // Force execution of OpenGL commands
+}
+
+// Main function
+int main(int argc, char **argv) {
+    glutInit(&argc, argv);                           // Initialize GLUT
+    glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH); // Set the display mode (RGB, single buffer, depth test)
+    glutInitWindowPosition(50, 150);                // Set the initial window position
+    glutInitWindowSize(600, 600);                   // Set the window size
+    glutCreateWindow("Spinning Cube");              // Create the window with a title
+    glutDisplayFunc(display);                       // Register the display function
+    init();                                         // Initialize OpenGL settings
+    glutIdleFunc(spin);                             // Register the idle function for continuous rotation
+    glutMainLoop();                                 // Enter the GLUT event loop
+    return 0;                                       // Exit the program
+}

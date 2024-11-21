@@ -1,0 +1,76 @@
+#include <GL/glut.h> // Include OpenGL Utility Toolkit (GLUT) library for handling OpenGL windows and functions
+
+// Function to initialize OpenGL environment
+void init() {
+    glClearColor(0.0, 0.0, 0.0, 1.0); // Set background color to black (RGB = 0.0, 0.0, 0.0)
+    glMatrixMode(GL_PROJECTION);       // Set the matrix mode to PROJECTION to affect the camera settings
+    glLoadIdentity();                  // Reset any existing transformations
+    gluOrtho2D(0.0, 640.0, 0.0, 480.0); // Set up 2D orthographic projection for a 640x480 window
+}
+
+// Function to perform flood fill algorithm
+void floodFill(int x, int y, float* oldColor, float* newColor) {
+    float color[3]; // Array to store the current color of the pixel
+
+    // Read the pixel color at (x, y)
+    glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, color);
+
+    // Check if the current color matches the old color and is not equal to the new color
+    if ((color[0] == oldColor[0] && color[1] == oldColor[1] && color[2] == oldColor[2]) &&
+        (color[0] != newColor[0] || color[1] != newColor[1] || color[2] != newColor[2])) {
+
+        // Set the color to the new color (fill color)
+        glColor3f(newColor[0], newColor[1], newColor[2]);
+
+        // Draw a point at (x, y) to fill the pixel
+        glBegin(GL_POINTS);
+        glVertex2i(x, y); // Specify the pixel's position
+        glEnd();
+        glFlush(); // Force the rendering to complete immediately
+
+        // Recursively call the floodFill function to fill neighboring pixels
+        if (x < 640 && x > 0 && y < 480 && y > 0) { // Ensure the pixel is within the bounds of the window
+            floodFill(x + 1, y, oldColor, newColor); // Right
+            floodFill(x - 1, y, oldColor, newColor); // Left
+            floodFill(x, y + 1, oldColor, newColor); // Up
+            floodFill(x, y - 1, oldColor, newColor); // Down
+        }
+    }
+}
+
+// Function to render the display
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the color buffer (background)
+
+    glColor3f(0, 1, 1); // Set color to cyan (RGB = 0, 1, 1)
+
+    // Draw a quadrilateral (e.g., a rectangle or square) using GL_LINE_LOOP
+    glBegin(GL_LINE_LOOP);
+    glVertex2i(200, 200); // Bottom-left corner
+    glVertex2i(400, 200); // Bottom-right corner
+    glVertex2i(480, 400); // Top-right corner
+    glVertex2i(200, 400); // Top-left corner
+    glEnd();
+    glFlush(); // Render the geometry
+
+    // Define the old color (black, background) and the new color (cyan, fill color)
+    float oldColor[] = {0.0, 0.0, 0.0}; // Black background
+    float newColor[] = {0.0, 1.0, 1.0}; // Cyan fill color
+
+    // Call the flood fill function to fill the area starting at (300, 300) with cyan
+    floodFill(300, 300, oldColor, newColor);
+}
+
+// Main function to set up and run the OpenGL program
+int main(int argc, char** argv) {
+    glutInit(&argc, argv); // Initialize GLUT with the command-line arguments
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // Set the display mode (single buffer, RGB color)
+    glutInitWindowSize(640, 480); // Set the window size to 640x480 pixels
+    glutInitWindowPosition(200, 200); // Set the window position on the screen
+    glutCreateWindow("Flood Fill Algorithm"); // Create a window with the given title
+
+    init(); // Initialize OpenGL settings
+    glutDisplayFunc(display); // Register the display function to render the window content
+    glutMainLoop(); // Start the GLUT event loop to keep the window open and interactive
+    return 0; // Return 0 to indicate successful execution
+}

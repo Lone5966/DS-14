@@ -1,0 +1,123 @@
+#include <GL/gl.h>      // Core OpenGL functions
+#include <GL/glu.h>     // OpenGL Utility Library for higher-level operations
+#include <GL/glut.h>    // OpenGL Utility Toolkit for window management and event handling
+#include <stdlib.h>     // Standard library for general utilities (e.g., exit())
+#include <stdio.h>      // Standard I/O library for functions like printf (not used here)
+
+#define TEXTURE_WIDTH 64   // Width of the texture
+#define TEXTURE_HEIGHT 64  // Height of the texture
+
+// A 3D array to store the RGBA values for the texture
+static GLubyte textureImage[TEXTURE_HEIGHT][TEXTURE_WIDTH][4];
+
+// Variable to hold the OpenGL texture ID
+static GLuint textureID;
+
+// Function to generate a checkerboard pattern for the texture
+void generateTextureImage(void)
+{
+    int i, j, color;  // Loop variables and color value
+    for (i = 0; i < TEXTURE_HEIGHT; i++) {
+        for (j = 0; j < TEXTURE_WIDTH; j++) {
+            // Determine the color for the current pixel based on alternating rows and columns
+            color = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0)) * 255);
+
+            // Set the RGBA values for each pixel
+            textureImage[i][j][0] = (GLubyte) color; // Red channel
+            textureImage[i][j][1] = (GLubyte) color; // Green channel
+            textureImage[i][j][2] = (GLubyte) color; // Blue channel
+            textureImage[i][j][3] = (GLubyte) 255;   // Alpha channel (fully opaque)
+        }
+    }
+}
+
+// Function to initialize OpenGL settings and load the texture
+void initialize(void)
+{
+    glClearColor(0.0, 0.0, 0.0, 0.0); // Set background color to black
+    glShadeModel(GL_FLAT);            // Set shading model to flat (no smooth shading)
+    glEnable(GL_DEPTH_TEST);          // Enable depth testing for 3D rendering
+
+    generateTextureImage();           // Generate the checkerboard texture
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Set pixel alignment to 1 byte per row
+
+    glGenTextures(1, &textureID);     // Generate a texture ID
+    glBindTexture(GL_TEXTURE_2D, textureID); // Bind the texture for subsequent operations
+
+    // Set texture wrapping mode for both horizontal and vertical directions
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Repeat horizontally
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // Repeat vertically
+
+    // Set texture filtering mode
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // Nearest neighbor filtering for magnification
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // Nearest neighbor filtering for minification
+
+    // Define the texture image
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, textureImage);
+}
+
+// Function to render the scene
+void display(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the screen and depth buffer
+
+    glEnable(GL_TEXTURE_2D);                            // Enable 2D texturing
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); // Set texture mode to decal (overlay)
+
+    glBindTexture(GL_TEXTURE_2D, textureID);            // Bind the texture
+
+    // Draw a textured quad
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, 0.0); // Bottom-left corner
+        glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, 0.0);  // Top-left corner
+        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0.0);   // Top-right corner
+        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, 0.0);  // Bottom-right corner
+    glEnd();
+
+    glFlush();               // Force OpenGL to finish rendering the frame
+    glDisable(GL_TEXTURE_2D); // Disable 2D texturing
+}
+
+// Function to handle window resizing
+void reshape(int width, int height)
+{
+    glViewport(0, 0, (GLsizei)width, (GLsizei)height); // Set the viewport to cover the entire window
+
+    glMatrixMode(GL_PROJECTION); // Switch to the projection matrix
+    glLoadIdentity();            // Reset the projection matrix
+    gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 30.0); // Set up a perspective projection
+
+    glMatrixMode(GL_MODELVIEW);  // Switch back to the model-view matrix
+    glLoadIdentity();            // Reset the model-view matrix
+    glTranslatef(0.0, 0.0, -3.6); // Move the scene back to make it visible
+}
+
+// Function to handle keyboard input
+void keyboard(unsigned char key, int x, int y)
+{
+    if (key == 27) { // Check if the 'Esc' key is pressed
+        exit(0);     // Exit the program
+    }
+}
+
+// Main function
+int main(int argc, char** argv)
+{
+    glutInit(&argc, argv); // Initialize GLUT with command-line arguments
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH); // Set display mode: single-buffered, RGB, with depth buffer
+
+    glutInitWindowSize(500, 500); // Set initial window size to 500x500 pixels
+    glutInitWindowPosition(100, 100); // Set initial window position on the screen
+    glutCreateWindow("Chessboard Texture"); // Create a window with the specified title
+
+    initialize(); // Call the initialization function
+
+    glutDisplayFunc(display); // Register the display callback function
+    glutReshapeFunc(reshape); // Register the reshape callback function
+    glutKeyboardFunc(keyboard); // Register the keyboard input callback function
+
+    glutMainLoop(); // Enter the GLUT event-processing loop
+    return 0; // Exit the program
+}

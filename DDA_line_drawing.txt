@@ -1,0 +1,86 @@
+#include <GL/glut.h> // GLUT library for creating windows and handling OpenGL functionality
+#include <iostream>  // For standard input/output operations (e.g., cin, cout)
+#include <cmath>     // Provides mathematical functions like abs() and round()
+
+using namespace std;
+
+// Variables to store the endpoints of the line
+int x1, y_start, x2, y_end;
+
+// Variables for differences, steps, and increments
+int dx, dy, step;    // dx and dy are the differences between x and y coordinates, step determines the number of steps for the line
+float x, y, xinc, yinc; // x, y store the current position; xinc and yinc are the increments for x and y at each step
+
+// Function to initialize OpenGL settings
+void initGL() {
+    glClearColor(0.0, 0.0, 0.0, 1.0); // Set the background color to black (RGBA: Red, Green, Blue, Alpha)
+    glColor3f(1.0, 1.0, 1.0);         // Set the drawing color to white (RGB)
+    glPointSize(1.0);                 // Set the size of each point (1 pixel by default)
+    glMatrixMode(GL_PROJECTION);      // Switch to projection mode for setting up the coordinate system
+    glLoadIdentity();                 // Reset the projection matrix
+    gluOrtho2D(0, 800, 0, 600);       // Define a 2D orthographic projection: (left, right, bottom, top)
+}
+
+// Function to draw a single pixel on the screen
+void setPixel(int x, int y) {
+    glBegin(GL_POINTS);      // Begin drawing points
+    glVertex2i(x, y);        // Specify the coordinates of the point
+    glEnd();                 // End drawing points
+}
+
+// Function to implement the DDA line drawing algorithm
+void drawLine() {
+    dx = (x2 - x1);           // Calculate the difference in x-coordinates
+    dy = (y_end - y_start);   // Calculate the difference in y-coordinates
+
+    // Determine the number of steps needed
+    if (abs(dx) > abs(dy)) {  // If the horizontal distance is greater than vertical
+        step = abs(dx);       // Use dx as the number of steps
+    } else {                  // Otherwise
+        step = abs(dy);       // Use dy as the number of steps
+    }
+
+    // Calculate the increments for x and y at each step
+    xinc = float(dx) / step;  // Increment for x-coordinate
+    yinc = float(dy) / step;  // Increment for y-coordinate
+
+    x = x1;                   // Initialize x with the starting x-coordinate
+    y = y_start;              // Initialize y with the starting y-coordinate
+
+    // Draw the initial pixel
+    setPixel(x, y);
+
+    // Loop to calculate and draw each pixel along the line
+    for (int i = 0; i < step; ++i) {
+        x += xinc;            // Increment x by xinc
+        y += yinc;            // Increment y by yinc
+        setPixel(round(x), round(y)); // Draw the pixel (rounded to the nearest integer for accuracy)
+    }
+}
+
+// Callback function to handle rendering
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the screen to the background color
+    drawLine();                   // Call the DDA line drawing function
+    glFlush();                    // Ensure all OpenGL commands are executed
+}
+
+// Main function: Entry point of the program
+int main(int argc, char** argv) {
+    // Prompt the user for the coordinates of the line's endpoints
+    cout << "Enter the value of x1, y1, x2, y2: ";
+    cin >> x1 >> y_start >> x2 >> y_end; // Input x1, y1 (start point) and x2, y2 (end point)
+
+    // Initialize GLUT and create a window
+    glutInit(&argc, argv);                       // Initialize the GLUT library
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // Set display mode: single buffer, RGB color
+    glutInitWindowSize(800, 600);                // Set the window size (800x600 pixels)
+    glutInitWindowPosition(100, 100);            // Set the window position on the screen
+    glutCreateWindow("DDA Line Drawing Algorithm"); // Create the window with a title
+
+    initGL();                // Initialize OpenGL settings
+    glutDisplayFunc(display); // Register the display callback function (called when the window needs to be redrawn)
+    glutMainLoop();          // Enter the GLUT event loop (wait for events like window updates)
+
+    return 0; // Exit the program
+}

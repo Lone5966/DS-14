@@ -1,0 +1,98 @@
+#include <GL/glut.h>
+
+// Function to draw a single pixel at (x, y) in hot pink color
+void drawPixel(int x, int y) {
+    glColor3f(1.0, 0.41, 0.71); // Set color to hot pink
+    glPointSize(1.0);           // Set pixel size to 1
+    glBegin(GL_POINTS);         // Begin drawing points
+    glVertex2i(x, y);           // Specify the coordinates of the pixel
+    glEnd();                    // End drawing points
+}
+
+// Function to detect edges and update left and right edge arrays
+void edgeDetect(float xStart, float yStart, float xEnd, float yEnd, int *leftEdge, int *rightEdge) {
+    float temp, x, slope;
+    int y;
+
+    // Ensure the edge is from bottom to top for consistency
+    if (yStart > yEnd) {
+        temp = xStart; xStart = xEnd; xEnd = temp;  // Swap x-coordinates
+        temp = yStart; yStart = yEnd; yEnd = temp;  // Swap y-coordinates
+    }
+
+    // Calculate the slope of the line (change in x per y increment)
+    slope = (yStart == yEnd) ? (xEnd - xStart) : (xEnd - xStart) / (yEnd - yStart);
+
+    // Traverse the edge vertically and update the edge tables
+    x = xStart;
+    for (y = int(yStart); y <= int(yEnd); y++) {
+        if (x < (float)leftEdge[y]) leftEdge[y] = (int)x; // Update left edge if x is smaller
+        if (x > (float)rightEdge[y]) rightEdge[y] = (int)x; // Update right edge if x is larger
+        x += slope; // Move x along the slope
+    }
+}
+
+// Function to fill a polygon using the scanline fill algorithm
+void scanlineFill(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+    int leftEdge[500], rightEdge[500];
+
+    // Initialize edges to extreme values
+    for (int i = 0; i < 500; i++) {
+        leftEdge[i] = 500;  // Set left edges to maximum
+        rightEdge[i] = 0;   // Set right edges to minimum
+    }
+
+    // Detect edges of the polygon and update the edge tables
+    edgeDetect(x1, y1, x2, y2, leftEdge, rightEdge);
+    edgeDetect(x2, y2, x3, y3, leftEdge, rightEdge);
+    edgeDetect(x3, y3, x4, y4, leftEdge, rightEdge);
+    edgeDetect(x4, y4, x1, y1, leftEdge, rightEdge);
+
+    // Fill the polygon between detected left and right edges for each scanline
+    for (int y = 0; y < 500; y++) {
+        if (leftEdge[y] <= rightEdge[y]) { // If valid edges exist on the scanline
+            for (int x = leftEdge[y]; x <= rightEdge[y]; x++) {
+                drawPixel(x, y); // Draw the pixels between the edges
+            }
+        }
+    }
+}
+
+// Display function to render the filled polygon
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the color buffer
+
+    glColor3f(0.0f, 0.0f, 1.0f); // Set color to blue for the outline
+    glBegin(GL_LINE_LOOP);       // Begin drawing the polygon outline
+    glVertex2f(200, 200);        // Bottom-left corner
+    glVertex2f(300, 200);        // Bottom-right corner
+    glVertex2f(300, 300);        // Top-right corner
+    glVertex2f(200, 300);        // Top-left corner
+    glEnd();                     // End drawing the polygon outline
+
+    // Call the scanlineFill function to fill the polygon
+    scanlineFill(200, 200, 300, 200, 300, 300, 200, 300);
+
+    glFlush(); // Force execution of OpenGL commands
+}
+
+// Function to initialize OpenGL settings
+void init() {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
+    glMatrixMode(GL_PROJECTION);          // Set the projection matrix
+    glLoadIdentity();                     // Reset the projection matrix
+    gluOrtho2D(0.0f, 499.0f, 0.0f, 499.0f); // Set 2D orthographic viewing region
+}
+
+// Main function
+int main(int argc, char **argv) {
+    glutInit(&argc, argv);                          // Initialize GLUT
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);    // Set display mode
+    glutInitWindowSize(500, 500);                   // Set window size
+    glutInitWindowPosition(100, 100);               // Set window position
+    glutCreateWindow("Scanline Polygon Fill");      // Create the window
+    glutDisplayFunc(display);                       // Register display callback
+    init();                                         // Initialize OpenGL settings
+    glutMainLoop();                                 // Enter the GLUT event loop
+    return 0;                                       // Exit program
+}
