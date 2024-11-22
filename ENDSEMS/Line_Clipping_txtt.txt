@@ -1,0 +1,153 @@
+#include <GL/glut.h>  // Include the GLUT library for OpenGL utilities
+
+// Function to initialize OpenGL settings
+void init() {
+    glClearColor(1, 1, 1, 1);       // Set background color to white
+    glMatrixMode(GL_PROJECTION);    // Set the matrix mode to projection
+    gluOrtho2D(-250, 750, -250, 250); // Set the 2D orthographic projection with specified bounds
+}
+
+// Define a structure to represent a point in 2D space with its region code
+typedef struct point {
+    float x, y;        // Coordinates of the point
+    int rC[4];         // Region code array (left, right, bottom, top)
+} PT;
+
+// Declare global points to be used for the lines
+PT p1, p2, p3, p4;
+
+// Define the clipping window boundaries
+float xmin = -100, xmax = 100, ymin = -100, ymax = 100;
+
+// Function to calculate the region code for a given point
+void setRC(PT &p) {
+    for (int i = 0; i < 4;i++) {
+        p.rC[i] = 0;  // Initialize all region codes to 0
+    }
+    // Check if the point lies outside the clipping window
+    if (p.x < xmin) p.rC[0] = 1;   // Left
+    else if (p.x > xmax) p.rC[1] = 1; // Right
+    if (p.y < ymin) p.rC[2] = 1;   // Bottom
+    else if (p.y > ymax) p.rC[3] = 1; // Top
+}
+
+// Function to determine the category of a line segment based on the Cohen-Sutherland algorithm
+int getCategory(PT p1, PT p2) {
+    // Combine the region codes of both endpoints
+    int outsideCheck = (p1.rC[0] | p1.rC[1] | p1.rC[2] | p1.rC[3]) |
+                       (p2.rC[0] | p2.rC[1] | p2.rC[2] | p2.rC[3]);
+    if (outsideCheck == 0) return 1; // Line is completely inside the window
+    // Check for trivial rejection (line is completely outside the window)
+    if ((p1.rC[0] & p2.rC[0]) || (p1.rC[1] & p2.rC[1]) ||
+        (p1.rC[2] & p2.rC[2]) || (p1.rC[3] & p2.rC[3])) return 2;
+    return 3; // Line requires clipping
+}
+
+// Function to plot a line
+void plotLine(PT p1, PT p2, int offsetX = 0) {
+    glColor3f(0, 1, 0); // Set line color to green
+    glBegin(GL_LINES);
+    glVertex2f(p1.x + offsetX, p1.y); // Start point with offset
+    glVertex2f(p2.x + offsetX, p2.y); // End point with offset
+    glEnd();
+}
+
+// Function to plot the clipping window
+void plotWindow(int offsetX = 0) {
+    glColor3f(1, 0, 0); // Set color to red for the window boundary
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(xmin + offsetX, ymin); // Bottom-left corner
+    glVertex2f(xmax + offsetX, ymin); // Bottom-right corner
+    glVertex2f(xmax + offsetX, ymax); // Top-right corner
+    glVertex2f(xmin + offsetX, ymax); // Top-left corner
+    glEnd();
+}
+
+// Function to clip a line using the Cohen-Sutherland algorithm
+void lineClipperCS(PT &p1, PT &p2) {
+    setRC(p1); // Calculate region code for the first point
+    setRC(p2); // Calculate region code for the second point
+    int category = getCategory(p1, p2); // Determine the category of the line
+    switch (category) {
+        case 1: // Line is completely inside the window
+            plotLine(p1, p2); // Plot the line as is
+            break;
+        case 2: // Line is completely outside the window
+            break; // Do not plot anything
+        case 3: { // Line requires clipping
+            float m = (p2.y - p1.y) / (p2.x - p1.x); // Calculate slope of the line
+            // Clip the first point if it's outside the window
+            if (p1.rC[0] || p1.rC[1] || p1.rC[2] || p1.rC[3]) {
+                if (p1.rC[3]) { // Top
+                    p1.x += (ymax - p1.y) / m;
+                    p1.y = ymax;
+                } else if (p1.rC[2]) { // Bottom
+                    p1.x += (ymin - p1.y) / m;
+                    p1.y = ymin;
+                } else if (p1.rC[1]) { // Right
+                    p1.y += m * (xmax - p1.x);
+                    p1.x = xmax;
+                } else if (p1.rC[0]) { // Left
+                    p1.y += m * (xmin - p1.x);
+                    p1.x = xmin;
+                }
+                setRC(p1); // Update region code after clipping
+            }
+            // Clip the second point if it's outside the window
+            if (p2.rC[0] || p2.rC[1] || p2.rC[2] || p2.rC[3]) {
+                if (p2.rC[3]) { // Top
+                    p2.x += (ymax - p2.y) / m;
+                    p2.y = ymax;
+                } else if (p2.rC[2]) { // Bottom
+                    p2.x += (ymin - p2.y) / m;
+                    p2.y = ymin;
+                } else if (p2.rC[1]) { // Right
+                    p2.y += m * (xmax - p2.x);
+                    p2.x = xmax;
+                } else if (p2.rC[0]) { // Left
+                    p2.y += m * (xmin - p2.x);
+                    p2.x = xmin;
+                }
+                setRC(p2); // Update region code after clipping
+            }
+            plotLine(p1, p2); // Plot the clipped line
+            break;
+        }
+    }
+}
+
+// Function to render the scene
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the screen
+    plotWindow();                 // Plot the clipping window
+    plotWindow(500);              // Plot another window with an offset
+
+    // Define two lines
+    p1.x = 150; p1.y = 50;
+    p2.x = -150; p2.y = -200;
+    p3.x = -50; p3.y = 120;
+    p4.x = -120; p4.y = -50;
+
+    plotLine(p1, p2); // Plot the first line without clipping
+    plotLine(p3, p4); // Plot the second line without clipping
+
+    lineClipperCS(p1, p2); // Clip the first line
+    lineClipperCS(p3, p4); // Clip the second line
+
+    plotLine(p1, p2, 500); // Plot the clipped first line with offset
+    plotLine(p3, p4, 500); // Plot the clipped second line with offset
+    glFlush(); // Render the current frame
+}
+
+// Main function
+int main(int argc, char** argv) {
+    glutInit(&argc, argv); // Initialize GLUT with command-line arguments
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // Set display mode: single-buffered, RGB
+    glutInitWindowPosition(0, 0); // Set the initial window position
+    glutInitWindowSize(1000, 500); // Set the window size
+    glutCreateWindow("Cohen-Sutherland Line Clipping"); // Create a window with the given title
+    glutDisplayFunc(display); // Register the display callback function
+    init(); // Call the initialization function
+    glutMainLoop(); // Enter the GLUT event loop
+    return 0; // Exit the program
+}

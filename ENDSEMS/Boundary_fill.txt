@@ -1,0 +1,78 @@
+#include <GL/glut.h> // OpenGL Utility Toolkit header for window management and rendering
+
+// Function to initialize OpenGL environment
+void init()
+{
+    glMatrixMode(GL_PROJECTION);       // Set the current matrix mode to projection
+    glLoadIdentity();                 // Reset the projection matrix
+    glOrtho(0, 640, 0, 480, -1, 1);   // Set up a 2D orthographic projection
+}
+
+// Function to implement the boundary fill algorithm
+void boundaryFill(float x, float y, float* fillColor, float* borderColor)
+{
+    float currentColor[3]; // Array to store the current pixel color
+    // Read the color of the pixel at (x, y)
+    glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, currentColor);
+
+    // Check if the current color is neither the border color nor the fill color
+    if ((currentColor[0] != borderColor[0] || currentColor[1] != borderColor[1] || currentColor[2] != borderColor[2]) &&
+        (currentColor[0] != fillColor[0] || currentColor[1] != fillColor[1] || currentColor[2] != fillColor[2]))
+    {
+        // Set the current drawing color to the fill color
+        glColor3f(fillColor[0], fillColor[1], fillColor[2]);
+        // Draw a point at (x, y)
+        glBegin(GL_POINTS);
+        glVertex2i(x, y);
+        glEnd();
+        glFlush(); // Ensure the point is displayed immediately
+
+        // Recursively fill neighboring pixels
+        boundaryFill(x + 2, y, fillColor, borderColor); // Right pixel
+        boundaryFill(x - 2, y, fillColor, borderColor); // Left pixel
+        boundaryFill(x, y + 2, fillColor, borderColor); // Upper pixel
+        boundaryFill(x, y - 2, fillColor, borderColor); // Lower pixel
+    }
+}
+
+// Function to handle the display callback
+void display()
+{
+    glLineWidth(3);   // Set the line width for the border
+    glPointSize(2);   // Set the point size for the fill
+
+    // Define the border color (red) and fill color (green)
+    float border[] = {1.0f, 0.0f, 0.0f}; // RGB for red
+    float fill[] = {0.0f, 1.0f, 0.0f};   // RGB for green
+
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the screen with the current clear color
+
+    // Draw the boundary of the polygon (a square)
+    glColor3f(border[0], border[1], border[2]); // Set drawing color to red
+    glBegin(GL_LINE_LOOP); // Begin drawing a closed-loop line
+    glVertex2i(150, 150);  // Bottom-left vertex
+    glVertex2i(450, 150);  // Bottom-right vertex
+    glVertex2i(450, 450);  // Top-right vertex
+    glVertex2i(150, 450);  // Top-left vertex
+    glEnd();
+
+    glFlush(); // Ensure the boundary is rendered immediately
+
+    // Call the boundary fill function to fill the interior of the square
+    boundaryFill(300, 300, fill, border); // Start filling from the interior point (300, 300)
+}
+
+// Main function
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);                        // Initialize GLUT with command-line arguments
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  // Set display mode to single buffer and RGB color
+    glutInitWindowSize(640, 480);                 // Set the window size to 640x480 pixels
+    glutInitWindowPosition(200, 200);             // Set the position of the window on the screen
+    glutCreateWindow("Boundary Fill Algorithm");  // Create a window with the specified title
+
+    glutDisplayFunc(display); // Register the display callback function
+    init();                   // Initialize OpenGL settings
+    glutMainLoop();           // Enter the GLUT event loop
+    return 0;                 // Exit the program
+}

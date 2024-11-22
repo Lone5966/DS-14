@@ -1,0 +1,120 @@
+#include <GL/glut.h> // Include the GLUT library for OpenGL functionalities
+
+// Initialization function to set up the OpenGL environment
+void init() {
+    glClearColor(0, 0, 0, 1.0); // Set the background color to black (RGBA: Red, Green, Blue, Alpha)
+    gluOrtho2D(0, 300, 0, 300); // Define a 2D orthographic projection (x range: 0 to 300, y range: 0 to 300)
+}
+
+// Function to handle rendering
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the screen with the background color
+
+    // *** Draw borders ***
+    glLineWidth(5); // Set line width to 5 pixels
+    glBegin(GL_LINES); // Start drawing lines
+    glColor3f(0, 1, 0); // Set line color to green (RGB: 0, 1, 0)
+    // Define border lines
+    glVertex2i(0, 0);   // Bottom-left to bottom-right
+    glVertex2i(300, 0);
+    glVertex2i(300, 0); // Bottom-right to top-right
+    glVertex2i(300, 300);
+    glVertex2i(300, 300); // Top-right to top-left
+    glVertex2i(0, 300);
+    glVertex2i(0, 300);   // Top-left to bottom-left
+    glVertex2i(0, 0);
+    glEnd(); // End drawing lines
+
+    // *** Draw corners ***
+    glPointSize(10); // Set point size to 10 pixels
+    glBegin(GL_POINTS); // Start drawing points
+    glColor3f(1, 0, 0); // Set point color to red (RGB: 1, 0, 0)
+    // Define corner points
+    glVertex2i(0, 300);   // Top-left
+    glVertex2i(0, 0);     // Bottom-left
+    glVertex2i(150, 300); // Top-center
+    glVertex2i(300, 0);   // Bottom-right
+    glVertex2i(300, 300); // Top-right
+    glEnd(); // End drawing points
+
+    // *** Draw arithmetic operator '+' ***
+    glLineWidth(20); // Set line width to 20 pixels
+    glBegin(GL_LINES); // Start drawing lines
+    glColor3f(1, 1, 0); // Set line color to yellow (RGB: 1, 1, 0)
+    glVertex2i(10, 225);  // Horizontal line of '+'
+    glVertex2i(100, 225);
+    glVertex2i(55, 275);  // Vertical line of '+'
+    glVertex2i(55, 175);
+    glEnd(); // End drawing '+'
+
+    // *** Draw arithmetic operator 'x' ***
+    glLineWidth(20); // Set line width to 20 pixels
+    glBegin(GL_LINES); // Start drawing lines
+    glColor3f(1, 1, 0); // Set line color to yellow
+    glVertex2i(200, 275); // First diagonal of 'x'
+    glVertex2i(280, 175);
+    glVertex2i(280, 275); // Second diagonal of 'x'
+    glVertex2i(200, 175);
+    glEnd(); // End drawing 'x'
+
+    // *** Draw arithmetic operator '-' ***
+    glLineWidth(20); // Set line width to 20 pixels
+    glBegin(GL_LINES); // Start drawing lines
+    glColor3f(1, 1, 0); // Set line color to yellow
+    glVertex2i(120, 225); // Horizontal line of '-'
+    glVertex2i(180, 225);
+    glEnd(); // End drawing '-'
+
+    // *** Draw operators '<', '=', '>', and partially implemented '*' ***
+    glLineWidth(20); // Set line width to 20 pixels
+    glBegin(GL_LINES); // Start drawing lines
+    glColor3f(1, 1, 0); // Set line color to yellow
+
+    // '>' operator
+    glVertex2i(30, 20); // First diagonal of '>'
+    glVertex2i(70, 60);
+    glVertex2i(70, 60); // Second diagonal of '>'
+    glVertex2i(30, 100);
+
+    // '=' operator
+    glVertex2i(80, 40); // Top line of '='
+    glVertex2i(120, 40);
+    glVertex2i(80, 70); // Bottom line of '='
+    glVertex2i(120, 70);
+
+    // '<' operator
+    glVertex2i(170, 20); // First diagonal of '<'
+    glVertex2i(130, 60);
+    glVertex2i(130, 60); // Second diagonal of '<'
+    glVertex2i(170, 100);
+
+    // '*' operator (commented out, currently incomplete)
+    /* glVertex2i(250, 140);
+    glVertex2i(240, 90);
+    glVertex2i(240, 90);
+    glVertex2i(190, 100);
+    glVertex2i(240, 90);
+    glVertex2i(200, 40);
+    glVertex2i(240, 90);
+    glVertex2i(280, 40);
+    glVertex2i(240, 90);
+    glVertex2i(290, 100);
+    */
+    glEnd(); // End drawing operators
+
+    glFlush(); // Ensure all OpenGL commands are executed
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv); // Initialize GLUT with command-line arguments
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // Set display mode: single buffer and RGB color
+    glutInitWindowPosition(0, 0); // Set window position (top-left corner of the screen)
+    glutInitWindowSize(300, 300); // Set window size to 300x300 pixels
+    glutCreateWindow("Arithmetic (math) operators"); // Create a window with a title
+
+    init(); // Call the initialization function
+    glutDisplayFunc(display); // Register the display function to handle rendering
+    glutMainLoop(); // Enter the GLUT event loop (wait for events and updates)
+
+    return 0; // Exit the program (this line is never reached due to the event loop)
+}

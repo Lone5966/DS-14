@@ -1,0 +1,171 @@
+#include <GL/glut.h>
+#include <iostream>
+using namespace std;
+
+// Global variables for line endpoints
+int x1, x2, y1, y2;
+
+// Function to initialize the OpenGL environment
+void myInit() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the color buffer
+    glClearColor(0.0, 0.0, 0.0, 1.0); // Set the background color to black (RGBA)
+    glMatrixMode(GL_PROJECTION); // Set the matrix mode to projection (for 2D rendering)
+    gluOrtho2D(0, 500, 0, 500); // Define the 2D orthographic viewing region
+}
+
+// Function to draw a single pixel at (x, y)
+void draw_pixel(int x, int y) {
+    glBegin(GL_POINTS); // Start drawing points
+    glVertex2i(x, y);   // Specify the pixel coordinates
+    glEnd();            // End drawing points
+}
+
+// Function to draw the 8 symmetric points of a circle
+void draw_circle_points(int xc, int yc, int x, int y) {
+    // Using symmetry, plot points in all 8 octants
+    draw_pixel(xc + x, yc + y);
+    draw_pixel(xc - x, yc + y);
+    draw_pixel(xc + x, yc - y);
+    draw_pixel(xc - x, yc - y);
+    draw_pixel(xc + y, yc + x);
+    draw_pixel(xc - y, yc + x);
+    draw_pixel(xc + y, yc - x);
+    draw_pixel(xc - y, yc - x);
+}
+
+// Function to draw a circle using Bresenham's algorithm
+void draw_circle(int xc, int yc, int r) {
+    int x = 0, y = r;            // Starting point on the circle's radius
+    int d = 3 - 2 * r;           // Initial decision parameter
+
+    draw_circle_points(xc, yc, x, y); // Plot the initial symmetric points
+
+    while (x <= y) {             // Continue until x crosses y
+        if (d <= 0) {            // If decision parameter is less than or equal to 0
+            d = d + 4 * x + 6;   // Update it to move horizontally
+        } else {                 // If decision parameter is greater than 0
+            d = d + 4 * (x - y) + 10; // Update it to move diagonally
+            y--;                 // Decrease y as we're moving diagonally
+        }
+        x++;                     // Increment x at each step
+        draw_circle_points(xc, yc, x, y); // Plot the new symmetric points
+    }
+}
+
+// Function to draw a line using Bresenham's line drawing algorithm
+void draw_line(int x1, int x2, int y1, int y2) {
+    int dx = x2 - x1;
+    int dy = y2 - y1; // Calculate differences in x and y
+    int incx, incy;
+
+    // Determine x increment direction
+    if (x2 > x1) {
+        incx = 1;
+    } else {
+        incx = -1;
+    }
+
+    // Determine y increment direction
+    if (y2 > y1) {
+        incy = 1;
+    } else {
+        incy = -1;
+    }
+
+    dx = abs(dx);
+    dy = abs(dy);    // Take absolute values for calculations
+
+    int x = x1, y = y1;            // Starting point
+    if (dx > dy) {                 // If the slope is less than 1
+        int e = 2 * dy - dx;       // Initial decision parameter
+        int inc1 = 2 * (dy - dx);  // Parameter increment when decision > 0
+        int inc2 = 2 * dy;         // Parameter increment when decision <= 0
+        draw_pixel(x, y);          // Draw the starting pixel
+        for (int i = 0; i < dx; i++) { // Loop through all points
+            if (e >= 0) {          // If decision is greater than or equal to 0
+                y += incy;         // Move in y direction
+                e += inc1;         // Update decision parameter
+            } else {
+                e += inc2;         // Update decision parameter
+            }
+            x += incx;             // Move in x direction
+            draw_pixel(x, y);      // Draw the next pixel
+        }
+    } else {                       // If the slope is greater than or equal to 1
+        int e = 2 * dx - dy;       // Initial decision parameter
+        int inc1 = 2 * (dx - dy);  // Parameter increment when decision > 0
+        int inc2 = 2 * dx;         // Parameter increment when decision <= 0
+        draw_pixel(x, y);          // Draw the starting pixel
+        for (int i = 0; i < dy; i++) { // Loop through all points
+            if (e >= 0) {          // If decision is greater than or equal to 0
+                x += incx;         // Move in x direction
+                e += inc1;         // Update decision parameter
+            } else {
+                e += inc2;
+                y += incy;      // Update decision parameter
+            }
+                         // Move in y direction
+            draw_pixel(x, y);      // Draw the next pixel
+        }
+    }
+}
+
+// Display function to render objects
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT); // Clear the color buffer
+
+    // Draw a house with lines
+    glColor3f(1.0, 1.0, 1.0);     // Set line color to white
+    glBegin(GL_LINE_LOOP);        // Begin a loop to draw the house base
+    glVertex2i(200, 300);         // Top-right vertex
+    glVertex2i(120, 300);         // Top-left vertex
+    glVertex2i(120, 50);          // Bottom-left vertex
+    glVertex2i(200, 50);          // Bottom-right vertex
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);        // Draw the house roof
+    glVertex2i(120, 300);         // Left roof point
+    glVertex2i(160, 400);         // Peak of the roof
+    glVertex2i(200, 300);         // Right roof point
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);        // Draw a larger roof section
+    glVertex2i(160, 400);         // Peak
+    glVertex2i(380, 400);         // Right roof
+    glVertex2i(430, 300);         // Bottom-right
+    glVertex2i(200, 300);         // Bottom-left
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);        // Draw the larger house outline
+    glVertex2i(430, 300);         // Top-right
+    glVertex2i(430, 50);          // Bottom-right
+    glVertex2i(120, 50);          // Bottom-left
+    glVertex2i(120, 300);         // Top-left
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);        // Draw a door
+    glVertex2i(130, 50);          // Bottom-left of door
+    glVertex2i(130, 150);         // Top-left of door
+    glVertex2i(180, 150);         // Top-right of door
+    glVertex2i(180, 50);          // Bottom-right of door
+    glEnd();
+
+    // Draw a circle
+    glColor3f(0.0, 1.0, 0.0);     // Set circle color to green
+    draw_circle(300, 200, 50);    // Draw a circle centered at (300, 200) with radius 50
+
+    glFlush();                    // Force execution of GL commands
+}
+
+// Main function
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);                     // Initialize GLUT
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // Set display mode
+    glutInitWindowPosition(200, 200);          // Set the window position
+    glutInitWindowSize(800, 600);              // Set the window size
+    glutCreateWindow("Bresenham Line and Circle (House)"); // Create the window
+    myInit();                                  // Initialize the OpenGL environment
+    glutDisplayFunc(display);                  // Register the display callback function
+    glutMainLoop();                            // Enter the GLUT event loop
+    return 0;                                  // Exit the program
+}
