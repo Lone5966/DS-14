@@ -1,0 +1,33 @@
+% Question 1:
+A = [1 0 2 11; 0 -1 3 4; 6 9 20 100]
+
+% Question 2:
+B = [1:4]
+
+% Question 3:
+C = [9;7;6;3]
+
+% Question 4:
+A.*B
+
+% Question 5:
+A.^3
+
+% Question 6:
+cola = (100:-3:1)'
+
+% Question 7:
+colb = linspace(25,1,100)'
+
+% Question 8:
+x = rank(A)
+
+% Question 9:
+A(:,2)=[];
+A(:,3)=[];  % After deleting 2nd column, previous 4th becomes 3rd,hence A[:,3]
+y = A
+
+% Question 10:
+B(end+1,:)= [5:8];
+B(end+1,:)= [1:4];
+B(end+1,:)= [3:6]

@@ -1,0 +1,91 @@
+%Question 1:Find Quadratic polynomial for the following data
+% x  0.1 0.2 0.3 0.4 0.5
+% y  1.4 1.56 1.76 2 2.28
+% Also create a plot that shows
+
+x = 0.1:0.1:0.5;
+y = [1.4 1.56 1.76 2 2.28];
+plot(x,y,"rs")
+p = polyfit(x,y,2);
+
+hold on
+
+x1 = min(x):0.01:max(x);
+y1 = polyval(p,x1);
+hold on
+plot(x1,y1,"k--")
+%fprintf('y=%dx^2+%fx+%d',p(1),p(2),p(3))
+title("Curve Fitting")
+xlabel("X axis")
+ylabel("Y axis")
+
+
+%%
+x = [0.1 0.3 0.6 0.8];
+y = [0.72 1.81 2.73 3.47];
+plot(x,y,"r pentagram")
+p = polyfit(x,y,3);
+
+hold on
+
+x1 = min(x):0.01:max(x);
+y1 = polyval(p,x1);
+hold on
+plot(x1,y1,"k--")
+%fprintf('y=%dx^2+%fx+%d',p(1),p(2),p(3))
+title("Curve Fitting")
+xlabel("X axis")
+ylabel("Y axis")
+
+%%
+x = 0:5:25;
+y = [7 11 14 18 24 32];
+plot(x,y,"rs")
+p = polyfit(x,y,4);
+
+hold on
+
+x1 = min(x):0.01:max(x);
+y1 = polyval(p,x1);
+hold on
+plot(x1,y1,"k--")
+%fprintf('y=%dx^2+%fx+%d',p(1),p(2),p(3))
+title("Curve Fitting")
+xlabel("X axis")
+ylabel("Y axis")
+
+%%
+x = 0:5:25;
+y = [-1 9 19 29 39 49];
+plot(x,y,"rs")
+p = polyfit(x,y,2);
+
+hold on
+
+x1 = min(x):0.01:max(x);
+y1 = polyval(p,x1);
+hold on
+plot(x1,y1,"k--")
+%fprintf('y=%dx^2+%fx+%d',p(1),p(2),p(3))
+title("Curve Fitting")
+xlabel("X axis")
+ylabel("Y axis")
+
+%%
+%Exponential curve
+x = 1:1:10;
+y = [0.7358 0.2708 0.0996 0.0366 0.0135 0.0049 0.0018 0.0007 0.0002 0.00009];
+p = polyfit(x,log(y),1);
+b = p(1);
+a = exp(p(2));
+plot(x,y,'r pentagram')
+fprintf('y = %fe^(%f*x)\n',a,b)
+fprintf('Where a = %f , b = %f',a,b)
+hold on
+x1 = min(x):0.1:max(x);
+y1 = a.*exp(b.*x1);
+plot(x1,y1,'b')
+title("Exponential Curve Fitting")
+xlabel("X axis")
+ylabel("Y axis")
+legend("y","y1") 

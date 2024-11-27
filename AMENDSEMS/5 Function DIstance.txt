@@ -1,0 +1,5 @@
+function [S] = Distance(x,y,z)
+%To use this function just type Distance(values of x,y,z with commas
+%   Detailed explanation goes here
+S = sqrt(x^2+y^2+z^2);
+end
