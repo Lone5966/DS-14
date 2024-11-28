@@ -1,0 +1,60 @@
+%formula is I=h/2[y1+yn+2(y2+y3+.....+yn-1)
+%formula is I=h/3[y1+yn+4(y2+y4+....yn-1)+ 2(y3+y5+y7...)]
+%formula is I=3h/8[y1+yn+4(y2+y3+y5+y6....)+ 2(y4+y7+....)]
+
+%Trapezoidal (n is even)
+x = input(" x= ");
+y = input(" y= ");
+
+h = x(2) - x(1);
+n = length(x);
+A = 0 ;
+
+for i = 2:n-1
+    A = A + y(i);
+end
+
+I = h/2 *(y(1)+y(n)+2*A);
+disp("The Value of I is ");
+disp(I);
+
+%Simpson 1/3 (n is odd)
+x = input("x=");
+y = input("y=");
+h = x(2)-x(1);
+n = length(x);
+B1 = 0;
+B2 = 0;
+
+for i = 2:2:n-1
+    B1 = B1 + 4*y(i);
+end
+
+for j = 3:2:n-1
+    B2 = B2 + 2*y(j);
+end
+    I = h/3 * (y(1)+y(n)+B1+B2);
+    disp("The Value of I is:  ");
+    disp(I);
+
+%Simpsons 3/8 (n is multiple of 3)
+x = input("x=");
+y = input("y=");
+h = x(2)-x(1);
+n = length(x);
+B1 = 0;
+B2 = 0;
+B3 = 0;
+for i = 2:n-1
+    B1 = B1 + 3*y(i);
+end
+
+for i = 4:3:n-1
+    B3 = B3 + 3*y(i);
+end
+for i = 4:3:n-1
+    B2 = B2 + 2*y(i);
+end
+
+I = ((3*h)/8) * (y(1)+ y (n) + B1 + B2 - B3);
+disp(I);

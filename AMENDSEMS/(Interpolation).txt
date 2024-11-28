@@ -1,0 +1,81 @@
+% Langranges Interpolation
+%To find y(x) if the curve y=f(x) passes through the points.
+x = input('x: ');   
+y = input('y: ');   
+X = input('X: ');  
+
+n = length(x);
+
+Y = 0;
+
+for i = 1:n
+    
+    Li = 1;
+    
+    for j = 1:n
+        if i ~= j
+            Li = Li * (X - x(j)) / (x(i) - x(j));
+        end
+    end
+    
+   
+    Y = Y + y(i) * Li;
+end
+disp(Y)
+
+%newton backward
+x = input('x: ');   % 2   4   6   8
+y = input('y: ');   % 490 517 529 540 
+X = input('X: ');
+
+n = length(x);
+
+D = zeros(n, n);
+D = y';
+for j = 2:n
+    for i = 1 : n-j+1
+        D(i,j) = D(i+1, j-1) - D(i, j-1);
+    end
+end
+
+disp(D)
+
+Y = y(n);
+h = x(2) - x(1);
+u = (X - x(n)) / h;
+
+for k = 2:n
+    Y = Y + D(n-k+1,k)*u/factorial(k-1);
+    u = u * (X - x(n-k+1))/h;
+end
+
+disp(Y)
+
+%newton forward
+x = input('x: ');   % 2   4   6   8
+y = input('y: ');   % 490 517 529 540 
+X = input('X: ');
+
+n = length(x);
+
+D = zeros(n, n);
+D = y';
+for j = 2:n
+    for i = 1 : n-j+1
+        D(i,j) = D(i+1, j-1) - D(i, j-1);
+    end
+end
+
+disp(D)
+
+Y = y(1);
+h = x(2) - x(1);
+u = (X - x(1)) / h;
+
+for k = 2:n
+    Y = Y + D(1,k)*u/factorial(k-1);
+    u = u * (X - x(k))/h;
+end
+
+disp(Y)
+
