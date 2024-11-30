@@ -1,0 +1,542 @@
+/*
+Concept: Class and Objects
+A class is a user-defined data type that encapsulates data and functions operating on it. Constructors initialize the class objects when created, and destructors clean up resources when objects are destroyed. This program demonstrates a simple class for managing student details, including a constructor, destructor, and a user-defined function to display information.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Student {
+    string name;
+    int roll;
+
+public:
+    // Constructor
+    Student(string n, int r) {
+        name = n;
+        roll = r;
+        cout << "Constructor called: Student created." << endl;
+    }
+
+    // User-defined function to display details
+    void displayDetails() {
+        cout << "Name: " << name << ", Roll: " << roll << endl;
+    }
+
+    // Destructor
+    ~Student() {
+        cout << "Destructor called: Student object destroyed." << endl;
+    }
+};
+
+int main() {
+    Student s1("John", 101);
+    s1.displayDetails();
+
+    return 0;
+}
+
+
+
+
+
+
+
+/*
+Concept: Constructor Types
+Constructors are special member functions used to initialize objects. There are different types of constructors: default (no parameters), parameterized (with parameters), and copy constructors (create a new object as a copy of another). This program demonstrates these types using a Rectangle class.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Rectangle {
+    int length, breadth;
+
+public:
+    // Default constructor
+    Rectangle() : length(0), breadth(0) {}
+
+    // Parameterized constructor
+    Rectangle(int l, int b) : length(l), breadth(b) {}
+
+    // Copy constructor
+    Rectangle(const Rectangle& rect) : length(rect.length), breadth(rect.breadth) {}
+
+    // Function to calculate area
+    int area() { return length * breadth; }
+
+    // Function to display dimensions
+    void display() { cout << "Length: " << length << ", Breadth: " << breadth << endl; }
+};
+
+int main() {
+    Rectangle r1; // Default constructor
+    Rectangle r2(5, 10); // Parameterized constructor
+    Rectangle r3(r2); // Copy constructor
+
+    r1.display();
+    r2.display();
+    r3.display();
+
+    cout << "Area of r2: " << r2.area() << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+/*
+Concept: Operator Overloading
+Operator overloading allows defining custom behavior for operators when used with user-defined types. This program demonstrates overloading the '+' operator to add two complex numbers, enabling intuitive usage of the operator with objects.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Complex {
+    int real, imag;
+
+public:
+    // Parameterized constructor
+    Complex(int r = 0, int i = 0) : real(r), imag(i) {}
+
+    // Overloading the '+' operator
+    Complex operator+(const Complex& c) {
+        return Complex(real + c.real, imag + c.imag);
+    }
+
+    // Function to display the complex number
+    void display() { cout << real << " + " << imag << "i" << endl; }
+};
+
+int main() {
+    Complex c1(3, 4), c2(1, 2);
+
+    Complex c3 = c1 + c2; // Using overloaded '+' operator
+
+    cout << "First complex number: ";
+    c1.display();
+
+    cout << "Second complex number: ";
+    c2.display();
+
+    cout << "Sum: ";
+    c3.display();
+
+    return 0;
+}
+
+
+
+
+
+/*
+Concept: Dynamic Memory
+Dynamic memory allocation in C++ uses `new` and `delete` operators to allocate and deallocate memory at runtime. Pointers store memory addresses and references provide an alias for a variable. This program demonstrates these concepts with dynamic memory allocation and cleanup.
+*/
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int* ptr = new int; // Allocate memory for an integer
+    *ptr = 42;         // Assign value to dynamically allocated memory
+
+    cout << "Value stored in dynamically allocated memory: " << *ptr << endl;
+
+    delete ptr; // Free allocated memory
+    cout << "Memory deallocated successfully." << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*
+Concept: Function Types, Friend Class
+In C++, member functions can have different types, such as static member functions and inline functions. A `friend class` is a class that is allowed access to the private and protected members of another class. This program demonstrates these concepts by defining a `Student` class with static functions, inline functions, and a friend class `Teacher` that accesses private data of the `Student` class.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Student; // Forward declaration
+
+class Teacher {
+public:
+    void displayStudentDetails(const Student& s);
+};
+
+class Student {
+    string name;
+    int roll;
+
+public:
+    // Constructor
+    Student(string n, int r) : name(n), roll(r) {}
+
+    // Static function
+    static void schoolInfo() {
+        cout << "This is a school." << endl;
+    }
+
+    // Inline function to display details
+    inline void displayDetails() {
+        cout << "Name: " << name << ", Roll: " << roll << endl;
+    }
+
+    // Granting access to the Teacher class
+    friend class Teacher;
+};
+
+void Teacher::displayStudentDetails(const Student& s) {
+    cout << "Teacher accessing student details:" << endl;
+    cout << "Name: " << s.name << ", Roll: " << s.roll << endl;
+}
+
+int main() {
+    Student s1("John", 101);
+    Teacher t1;
+
+    // Accessing static function
+    Student::schoolInfo();
+
+    // Using inline function to display student details
+    s1.displayDetails();
+
+    // Teacher accessing private details using friend class
+    t1.displayStudentDetails(s1);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*
+Concept: Inheritance
+Inheritance allows a class (derived class) to inherit the properties and behaviors of another class (base class). This promotes reusability and modular design. In this program, different types of inheritance (single, multiple, and multilevel) are demonstrated using a simple class hierarchy for a `Vehicle` and `Car` class.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Vehicle {
+protected:
+    string brand;
+
+public:
+    Vehicle(string b) : brand(b) {}
+
+    void display() {
+        cout << "Vehicle Brand: " << brand << endl;
+    }
+};
+
+class Car : public Vehicle {
+    int speed;
+
+public:
+    Car(string b, int s) : Vehicle(b), speed(s) {}
+
+    void display() {
+        Vehicle::display();
+        cout << "Car Speed: " << speed << " km/h" << endl;
+    }
+};
+
+class SportsCar : public Car {
+    string model;
+
+public:
+    SportsCar(string b, int s, string m) : Car(b, s), model(m) {}
+
+    void display() {
+        Car::display();
+        cout << "Sports Car Model: " << model << endl;
+    }
+};
+
+int main() {
+    SportsCar sc("Ferrari", 200, "488 Spider");
+    sc.display(); // Demonstrating multilevel inheritance
+
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Polymorphism
+Polymorphism is the ability of a class to take on many forms. It allows a derived class to override methods of its base class. In this program, polymorphism is demonstrated through function overriding (runtime polymorphism) by defining a `Shape` class and its derived classes `Circle` and `Rectangle`, each implementing their own version of the `area` function.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void area() = 0; // Pure virtual function, making Shape an abstract class
+};
+
+class Circle : public Shape {
+    int radius;
+
+public:
+    Circle(int r) : radius(r) {}
+
+    void area() {
+        cout << "Circle Area: " << 3.14 * radius * radius << endl;
+    }
+};
+
+class Rectangle : public Shape {
+    int length, breadth;
+
+public:
+    Rectangle(int l, int b) : length(l), breadth(b) {}
+
+    void area() {
+        cout << "Rectangle Area: " << length * breadth << endl;
+    }
+};
+
+int main() {
+    Shape* shape1 = new Circle(5);
+    Shape* shape2 = new Rectangle(4, 6);
+
+    shape1->area(); // Circle's area function
+    shape2->area(); // Rectangle's area function
+
+    delete shape1;
+    delete shape2;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*
+Concept: Exception Handling
+Exception handling in C++ is done using try, catch, and throw keywords. It helps handle runtime errors and provides a mechanism to recover from unexpected situations. This program demonstrates a simple example of exception handling for dividing two numbers.
+*/
+
+#include <iostream>
+using namespace std;
+
+class DivideByZeroException : public exception {
+public:
+    const char* what() const throw() {
+        return "Division by zero is not allowed!";
+    }
+};
+
+double divide(int a, int b) {
+    if (b == 0) {
+        throw DivideByZeroException();
+    }
+    return static_cast<double>(a) / b;
+}
+
+int main() {
+    try {
+        cout << "Result: " << divide(10, 0) << endl; // Division by zero
+    }
+    catch (const DivideByZeroException& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*
+Concept: std::move in Utility
+`std::move` is used in C++ to enable efficient transfer of resources from one object to another without copying. It allows an object to be moved instead of copied, improving performance in some scenarios. This program demonstrates how `std::move` can be used to move resources between two objects.
+*/
+
+#include <iostream>
+#include <utility> // For std::move
+using namespace std;
+
+class Data {
+    int* ptr;
+
+public:
+    Data(int val) : ptr(new int(val)) {}
+    
+    // Move constructor
+    Data(Data&& other) noexcept : ptr(other.ptr) {
+        other.ptr = nullptr; // Null out the original pointer
+    }
+
+    // Destructor
+    ~Data() { delete ptr; }
+
+    void display() {
+        if (ptr) {
+            cout << "Value: " << *ptr << endl;
+        }
+    }
+};
+
+int main() {
+    Data d1(100);
+    Data d2 = std::move(d1); // Using std::move to transfer ownership
+
+    d2.display();
+    // d1 no longer owns the resource, so displaying it would be undefined
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+/*
+Concept: Templates
+Templates in C++ allow writing generic functions and classes that can work with any data type. The program demonstrates both function and class templates to show how they can be reused with different data types.
+*/
+
+#include <iostream>
+using namespace std;
+
+// Function template to find the maximum of two numbers
+template <typename T>
+T max(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// Class template for Pair
+template <typename T>
+class Pair {
+    T x, y;
+
+public:
+    Pair(T a, T b) : x(a), y(b) {}
+
+    void display() {
+        cout << "Pair: (" << x << ", " << y << ")" << endl;
+    }
+};
+
+int main() {
+    cout << "Max of 3 and 7: " << max(3, 7) << endl;
+    cout << "Max of 3.5 and 2.5: " << max(3.5, 2.5) << endl;
+
+    Pair<int> p1(10, 20);
+    Pair<string> p2("Hello", "World");
+
+    p1.display();
+    p2.display();
+
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Standard Template Library (STL)
+STL provides a collection of generic classes and functions for data structures such as vectors, lists, and others. In this program, we demonstrate the use of `std::list` and `std::vector` as containers to store and manipulate data.
+*/
+
+#include <iostream>
+#include <list>
+#include <vector>
+using namespace std;
+
+int main() {
+    // Demonstrating list (doubly linked list)
+    list<int> numbers = {1, 2, 3, 4, 5};
+    numbers.push_back(6);
+    numbers.push_front(0);
+
+    cout << "List elements: ";
+    for (int num : numbers) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    // Demonstrating vector (dynamic array)
+    vector<int> vec = {10, 20, 30};
+    vec.push_back(40);
+
+    cout << "Vector elements: ";
+    for (int num : vec) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Type Casting
+Type casting in C++ allows converting one data type to another. Implicit casting happens automatically, while explicit casting requires the programmer to indicate the conversion. This program demonstrates both types of casting using different types of variables.
+*/
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    double d = 9.5;
+    int i = static_cast<int>(d);  // Explicit casting
+
+    cout << "Double value: " << d << endl;
+    cout << "After explicit casting to int: " << i << endl;
+
+    // Implicit casting
+    float f = i;  // Implicit casting from int to float
+    cout << "After implicit casting to float: " << f << endl;
+
+    return 0;
+}
+
+
+
