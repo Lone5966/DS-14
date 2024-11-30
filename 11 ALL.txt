@@ -1,0 +1,1825 @@
+/*
+Problem: Write a function to reverse a string.
+Input: An array of characters `s`.
+Output: The reversed version of the array.
+Example: Input: ['h', 'e', 'l', 'l', 'o'] -> Output: ['o', 'l', 'l', 'e', 'h']
+*/
+
+#include <iostream>
+#include <vector>
+
+void reverseString(std::vector<char> &s) {
+    int left = 0, right = s.size() - 1;
+    while (left < right) {
+        char temp = s[left];
+        s[left] = s[right];
+        s[right] = temp;
+        left++;
+        right--;
+    }
+}
+
+int main() {
+    std::vector<char> s = {'h', 'e', 'l', 'l', 'o'};
+    reverseString(s);
+    for (char c : s) {
+        std::cout << c;
+    }
+    return 0;
+}
+
+
+
+
+
+/*
+Problem: Check if a given string is a palindrome.
+Input: A string `S`.
+Output: True if the string is a palindrome, otherwise false.
+Example: Input: "madam" -> Output: true
+*/
+
+#include <iostream>
+#include <string>
+
+bool isPalindrome(const std::string &S) {
+    int left = 0, right = S.size() - 1;
+    while (left < right) {
+        if (S[left] != S[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+
+int main() {
+    std::string S = "madam";
+    if (isPalindrome(S)) {
+        std::cout << S << " is a palindrome." << std::endl;
+    } else {
+        std::cout << S << " is not a palindrome." << std::endl;
+    }
+    return 0;
+}
+
+
+
+
+/*
+Problem: Print all duplicate characters and their counts in a given string.
+Input: A string `str`.
+Output: A list of duplicate characters with their frequency.
+Example: Input: "programming" -> Output: g: 2, r: 2, m: 2
+*/
+
+#include <iostream>
+#include <string>
+
+void printDuplicates(const std::string &str) {
+    int count[256] = {0}; // Array to store frequency of characters
+    for (char c : str) {
+        count[c]++;
+    }
+    for (int i = 0; i < 256; i++) {
+        if (count[i] > 1) {
+            std::cout << (char)i << ": " << count[i] << std::endl;
+        }
+    }
+}
+
+int main() {
+    std::string str = "programming";
+    printDuplicates(str);
+    return 0;
+}
+
+
+
+
+
+
+
+
+/*
+Problem: Check whether a given string is immutable.
+Concept: Strings in C++ are mutable unless explicitly declared `const`.
+Output: Demonstration of string mutability in C++.
+*/
+
+#include <iostream>
+#include <string>
+
+void checkImmutability() {
+    std::string str = "hello";
+    std::cout << "Original string: " << str << std::endl;
+
+    // Modify the string
+    str[0] = 'H';
+    std::cout << "Modified string: " << str << std::endl;
+
+    // If this is possible, the string is mutable
+    std::cout << "String in C++ is mutable." << std::endl;
+}
+
+int main() {
+    checkImmutability();
+    return 0;
+}
+
+
+
+
+
+
+/*
+Problem: Check if one string is a rotation of another string.
+Input: Two strings `s1` and `s2`.
+Output: True if `s2` is a rotation of `s1`, otherwise false.
+Example: Input: s1 = "abcde", s2 = "cdeab" -> Output: true
+*/
+
+#include <iostream>
+#include <string>
+
+bool isRotation(const std::string &s1, const std::string &s2) {
+    if (s1.size() != s2.size()) {
+        return false;
+    }
+    std::string temp = s1 + s1;
+    for (size_t i = 0; i <= temp.size() - s2.size(); i++) {
+        if (temp.substr(i, s2.size()) == s2) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    std::string s1 = "abcde";
+    std::string s2 = "cdeab";
+    if (isRotation(s1, s2)) {
+        std::cout << s2 << " is a rotation of " << s1 << std::endl;
+    } else {
+        std::cout << s2 << " is not a rotation of " << s1 << std::endl;
+    }
+    return 0;
+}
+
+
+
+
+
+/*
+Problem: Check if a given string is a valid shuffle of two distinct strings.
+Input: Three strings `a`, `b`, `c`.
+Output: True if `c` is a valid shuffle of `a` and `b`, otherwise false.
+Example: Input: a = "abc", b = "xyz", c = "axbycz" -> Output: true
+*/
+
+#include <iostream>
+#include <string>
+
+bool isValidShuffle(const std::string &a, const std::string &b, const std::string &c) {
+    if (a.size() + b.size() != c.size()) {
+        return false;
+    }
+    size_t i = 0, j = 0, k = 0;
+    while (k < c.size()) {
+        if (i < a.size() && c[k] == a[i]) {
+            i++;
+        } else if (j < b.size() && c[k] == b[j]) {
+            j++;
+        } else {
+            return false;
+        }
+        k++;
+    }
+    return i == a.size() && j == b.size();
+}
+
+int main() {
+    std::string a = "abc", b = "xyz", c = "axbycz";
+    if (isValidShuffle(a, b, c)) {
+        std::cout << c << " is a valid shuffle of " << a << " and " << b << std::endl;
+    } else {
+        std::cout << c << " is not a valid shuffle of " << a << " and " << b << std::endl;
+    }
+    return 0;
+}
+
+
+
+
+
+// Given a positive integer N, print the count of set bits in it.
+#include <iostream>
+using namespace std;
+
+int countSetBits(int n) {
+    int count = 0;
+    while (n) {
+        count += (n & 1);
+        n >>= 1;
+    }
+    return count;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << countSetBits(n) << endl;
+    return 0;
+}
+
+
+
+
+
+// Given an array A containing 2*N+2 positive numbers, 
+// out of which 2*N numbers exist in pairs, find the two distinct numbers.
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> findTwoNonRepeating(vector<int> &arr) {
+    int XOR = 0;
+    for (int num : arr)
+        XOR ^= num;
+
+    int set_bit = XOR & ~(XOR - 1);
+
+    int x = 0, y = 0;
+    for (int num : arr) {
+        if (num & set_bit)
+            x ^= num;
+        else
+            y ^= num;
+    }
+
+    return {min(x, y), max(x, y)};
+}
+
+int main() {
+    vector<int> arr = {1, 2, 3, 2, 1, 4};
+    vector<int> result = findTwoNonRepeating(arr);
+    cout << result[0] << " " << result[1] << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Given two numbers A and B, count the number of bits to flip to convert A to B.
+#include <iostream>
+using namespace std;
+
+int countBitsToFlip(int a, int b) {
+    int XOR = a ^ b;
+    int count = 0;
+    while (XOR) {
+        count += (XOR & 1);
+        XOR >>= 1;
+    }
+    return count;
+}
+
+int main() {
+    int a, b;
+    cin >> a >> b;
+    cout << countBitsToFlip(a, b) << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Find the total count of set bits for all numbers from 1 to N.
+#include <iostream>
+using namespace std;
+
+int countSetBitsUtil(int n) {
+    if (n == 0)
+        return 0;
+    int x = log2(n);
+    return x * (1 << (x - 1)) + (n - (1 << x) + 1) + countSetBitsUtil(n - (1 << x));
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << countSetBitsUtil(n) << endl;
+    return 0;
+}
+
+
+
+
+
+
+
+// Check if a number N is a power of 2.
+#include <iostream>
+using namespace std;
+
+bool isPowerOfTwo(int n) {
+    return (n > 0 && (n & (n - 1)) == 0);
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << (isPowerOfTwo(n) ? "Yes" : "No") << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Find the position of the only set bit in N or return -1 if not valid.
+#include <iostream>
+using namespace std;
+
+int findSetBitPosition(int n) {
+    if (n == 0 || (n & (n - 1)) != 0)
+        return -1;
+    int pos = 1;
+    while (!(n & 1)) {
+        n >>= 1;
+        pos++;
+    }
+    return pos;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << findSetBitPosition(n) << endl;
+    return 0;
+}
+
+
+
+
+
+// Set bits in X from the range [l, r] of Y.
+#include <iostream>
+using namespace std;
+
+int setBitsInRange(int x, int y, int l, int r) {
+    int mask = ((1 << (r - l + 1)) - 1) << (l - 1);
+    return x | (y & mask);
+}
+
+int main() {
+    int x, y, l, r;
+    cin >> x >> y >> l >> r;
+    cout << setBitsInRange(x, y, l, r) << endl;
+    return 0;
+}
+
+
+
+
+
+
+
+// Divide A by B without using multiplication, division, and mod.
+#include <iostream>
+using namespace std;
+
+int divide(int a, int b) {
+    if (b == 0)
+        throw invalid_argument("Division by zero");
+    int quotient = 0;
+    int sign = ((a < 0) ^ (b < 0)) ? -1 : 1;
+    a = abs(a);
+    b = abs(b);
+
+    while (a >= b) {
+        a -= b;
+        quotient++;
+    }
+    return quotient * sign;
+}
+
+int main() {
+    int a, b;
+    cin >> a >> b;
+    cout << divide(a, b) << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Find the square of a number without *, /, or pow().
+#include <iostream>
+using namespace std;
+
+int square(int n) {
+    if (n < 0)
+        n = -n;
+    int result = 0, temp = n;
+    while (temp--) {
+        result += n;
+    }
+    return result;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << square(n) << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Given a string S, find all its possible subsequences in lexicographically sorted order.
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void generateSubsequences(string str, string curr, int index, vector<string> &result) {
+    if (index == str.length()) {
+        if (!curr.empty())
+            result.push_back(curr);
+        return;
+    }
+    generateSubsequences(str, curr + str[index], index + 1, result);
+    generateSubsequences(str, curr, index + 1, result);
+}
+
+int main() {
+    string s;
+    cin >> s;
+    vector<string> result;
+    generateSubsequences(s, "", 0, result);
+    sort(result.begin(), result.end());
+    for (const string &subseq : result) {
+        cout << subseq << endl;
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+// Given a number n, find the XOR of all numbers from 1 to n.
+#include <iostream>
+using namespace std;
+
+int xorFrom1ToN(int n) {
+    switch (n % 4) {
+        case 0: return n;
+        case 1: return 1;
+        case 2: return n + 1;
+        case 3: return 0;
+    }
+    return -1; // Should not reach here.
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << xorFrom1ToN(n) << endl;
+    return 0;
+}
+
+
+
+
+
+
+
+// Count numbers x smaller than or equal to n such that n + x = n XOR x.
+#include <iostream>
+using namespace std;
+
+int countValidX(int n) {
+    int unsetBits = 0;
+    while (n) {
+        if (!(n & 1))
+            unsetBits++;
+        n >>= 1;
+    }
+    return 1 << unsetBits;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << countValidX(n) << endl;
+    return 0;
+}
+
+
+
+
+
+
+
+
+// Check if a given number has an alternate binary pattern.
+#include <iostream>
+using namespace std;
+
+bool hasAlternateBinaryPattern(int n) {
+    int xorValue = n ^ (n >> 1);
+    return (xorValue & (xorValue + 1)) == 0;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << (hasAlternateBinaryPattern(n) ? "Yes" : "No") << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Find the most significant set bit (MSB) of a number.
+#include <iostream>
+using namespace std;
+
+int findMSB(int n) {
+    int msb = 0;
+    while (n > 1) {
+        n >>= 1;
+        msb++;
+    }
+    return 1 << msb;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << findMSB(n) << endl;
+    return 0;
+}
+
+
+
+
+
+// Invert all bits of a given non-negative integer n.
+#include <iostream>
+using namespace std;
+
+int invertBits(int n) {
+    int mask = 0;
+    int temp = n;
+    while (temp) {
+        mask = (mask << 1) | 1;
+        temp >>= 1;
+    }
+    return ~n & mask;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << invertBits(n) << endl;
+    return 0;
+}
+
+
+
+
+
+// Convert a binary number to its decimal equivalent.
+#include <iostream>
+#include <cmath>
+#include <string>
+using namespace std;
+
+int binaryToDecimal(string binary) {
+    int decimal = 0;
+    int power = 0;
+    for (int i = binary.length() - 1; i >= 0; i--) {
+        if (binary[i] == '1')
+            decimal += pow(2, power);
+        power++;
+    }
+    return decimal;
+}
+
+int main() {
+    string binary;
+    cin >> binary;
+    cout << binaryToDecimal(binary) << endl;
+    return 0;
+}
+
+
+
+
+
+
+// Swap two variables without using a third variable.
+#include <iostream>
+using namespace std;
+
+void swap(int &x, int &y) {
+    x = x ^ y;
+    y = x ^ y;
+    x = x ^ y;
+}
+
+int main() {
+    int x, y;
+    cin >> x >> y;
+    swap(x, y);
+    cout << x << " " << y << endl;
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given a sorted array `arr` containing `n` elements with possibly duplicate elements, 
+find the indexes of the first and last occurrences of an element `x`. 
+If the element is not found, return `-1` for both first and last.
+*/
+
+pair<int, int> findFirstAndLast(vector<int> &arr, int x) {
+    int n = arr.size();
+    int first = -1, last = -1;
+    
+    // Binary search for first occurrence
+    int low = 0, high = n - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == x) {
+            first = mid;
+            high = mid - 1; // Look for earlier occurrences
+        } else if (arr[mid] < x) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    
+    // Binary search for last occurrence
+    low = 0, high = n - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == x) {
+            last = mid;
+            low = mid + 1; // Look for later occurrences
+        } else if (arr[mid] < x) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    
+    return {first, last};
+}
+
+int main() {
+    vector<int> arr = {1, 2, 2, 2, 3, 4, 5};
+    int x = 2;
+    auto result = findFirstAndLast(arr, x);
+    cout << "First occurrence: " << result.first << ", Last occurrence: " << result.second << endl;
+    return 0;
+}
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given an array `Arr` of size `N` positive integers, find all the elements where 
+the value is equal to the index (1-based indexing). 
+For example, for Arr = {1, 2, 3, 5, 7, 6}, the output is 1, 2, 3, and 6.
+*/
+
+vector<int> valueEqualToIndex(vector<int> &arr) {
+    vector<int> result;
+    for (int i = 0; i < arr.size(); i++) {
+        if (arr[i] == i + 1) { // 1-based index check
+            result.push_back(arr[i]);
+        }
+    }
+    return result;
+}
+
+int main() {
+    vector<int> arr = {1, 2, 3, 5, 7, 6};
+    auto result = valueEqualToIndex(arr);
+    cout << "Values equal to their indices: ";
+    for (int x : result) cout << x << " ";
+    cout << endl;
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given a sorted array `nums` in ascending order, which is rotated at an unknown pivot index, 
+and a target number, find the index of the target in the array. 
+If the target is not present, return `-1`.
+
+Example: nums = [4, 5, 6, 7, 0, 1, 2], target = 0 -> Output: 4
+*/
+
+int searchInRotatedArray(vector<int> &nums, int target) {
+    int low = 0, high = nums.size() - 1;
+    
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        
+        if (nums[mid] == target) return mid;
+        
+        // Left half is sorted
+        if (nums[low] <= nums[mid]) {
+            if (target >= nums[low] && target < nums[mid]) {
+                high = mid - 1; // Target in left half
+            } else {
+                low = mid + 1; // Target in right half
+            }
+        }
+        // Right half is sorted
+        else {
+            if (target > nums[mid] && target <= nums[high]) {
+                low = mid + 1; // Target in right half
+            } else {
+                high = mid - 1; // Target in left half
+            }
+        }
+    }
+    
+    return -1; // Not found
+}
+
+int main() {
+    vector<int> nums = {4, 5, 6, 7, 0, 1, 2};
+    int target = 0;
+    cout << "Index of target: " << searchInRotatedArray(nums, target) << endl;
+    return 0;
+}
+
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given an array of integers, find a peak element. 
+An element is a peak if it is greater than or equal to its neighbors.
+For corner elements, we need to consider only one neighbor.
+*/
+
+int findPeakElement(vector<int>& nums) {
+    int low = 0, high = nums.size() - 1;
+    
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        
+        // Check if mid is peak
+        if ((mid == 0 || nums[mid - 1] <= nums[mid]) && 
+            (mid == nums.size() - 1 || nums[mid + 1] <= nums[mid])) {
+            return mid;
+        }
+        // If the left neighbor is greater, move to the left half
+        else if (mid > 0 && nums[mid - 1] > nums[mid]) {
+            high = mid - 1;
+        }
+        // If the right neighbor is greater, move to the right half
+        else {
+            low = mid + 1;
+        }
+    }
+    
+    return -1; // This should never be reached
+}
+
+int main() {
+    vector<int> arr = {1, 3, 20, 4, 1};
+    int peak = findPeakElement(arr);
+    cout << "Peak element index: " << peak << endl;
+    return 0;
+}
+
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given an array of integers from 1 to `n`, with one number missing, find the missing number.
+The array contains `n-1` elements.
+*/
+
+int findMissingNumber(vector<int>& arr, int n) {
+    int sum = n * (n + 1) / 2;
+    int arrSum = 0;
+    
+    for (int i = 0; i < arr.size(); i++) {
+        arrSum += arr[i];
+    }
+    
+    return sum - arrSum;
+}
+
+int main() {
+    vector<int> arr = {1, 2, 4, 6, 3, 7, 8}; // Missing number is 5
+    int n = 8;
+    cout << "The missing number is: " << findMissingNumber(arr, n) << endl;
+    return 0;
+}
+
+
+
+
+#include <iostream>
+using namespace std;
+
+/*
+Problem Statement:
+Implement the power function `pow(x, n)` without using the built-in power function. 
+The function should compute `x` raised to the power `n` (i.e., `x^n`).
+*/
+
+double power(double x, int n) {
+    if (n == 0) return 1;
+    
+    double half = power(x, n / 2);
+    
+    if (n % 2 == 0) {
+        return half * half;
+    } else {
+        if (n > 0) return half * half * x;
+        else return half * half / x;
+    }
+}
+
+int main() {
+    double x = 2.0;
+    int n = 10;
+    cout << x << " raised to the power " << n << " is: " << power(x, n) << endl;
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given two sorted arrays, merge them into a single sorted array.
+*/
+
+vector<int> mergeSortedArrays(vector<int>& arr1, vector<int>& arr2) {
+    vector<int> result;
+    int i = 0, j = 0;
+    
+    while (i < arr1.size() && j < arr2.size()) {
+        if (arr1[i] < arr2[j]) {
+            result.push_back(arr1[i]);
+            i++;
+        } else {
+            result.push_back(arr2[j]);
+            j++;
+        }
+    }
+    
+    // Add remaining elements
+    while (i < arr1.size()) {
+        result.push_back(arr1[i]);
+        i++;
+    }
+    
+    while (j < arr2.size()) {
+        result.push_back(arr2[j]);
+        j++;
+    }
+    
+    return result;
+}
+
+int main() {
+    vector<int> arr1 = {1, 3, 5, 7};
+    vector<int> arr2 = {2, 4, 6, 8};
+    vector<int> merged = mergeSortedArrays(arr1, arr2);
+    
+    cout << "Merged array: ";
+    for (int num : merged) cout << num << " ";
+    cout << endl;
+    
+    return 0;
+}
+
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given an array of integers, rearrange the array such that all positive numbers 
+appear before negative numbers, maintaining their relative order.
+*/
+
+void rearrangeArray(vector<int>& arr) {
+    int i = 0, j = 0;
+    vector<int> positive, negative;
+    
+    // Separate positive and negative numbers
+    for (int num : arr) {
+        if (num >= 0) positive.push_back(num);
+        else negative.push_back(num);
+    }
+    
+    // Concatenate positive and negative arrays
+    arr.clear();
+    arr.insert(arr.end(), positive.begin(), positive.end());
+    arr.insert(arr.end(), negative.begin(), negative.end());
+}
+
+int main() {
+    vector<int> arr = {1, -2, 3, -4, 5, -6};
+    rearrangeArray(arr);
+    
+    cout << "Rearranged array: ";
+    for (int num : arr) cout << num << " ";
+    cout << endl;
+    
+    return 0;
+}
+
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given an array of size `n`, find the majority element. 
+The majority element is the element that appears more than `n/2` times.
+You can assume that the majority element always exists in the array.
+*/
+
+int majorityElement(vector<int>& nums) {
+    int count = 0, candidate = -1;
+    
+    // Boyer-Moore Voting Algorithm
+    for (int num : nums) {
+        if (count == 0) candidate = num;
+        count += (num == candidate) ? 1 : -1;
+    }
+    
+    return candidate;
+}
+
+int main() {
+    vector<int> arr = {3, 3, 4, 2, 4, 4, 2, 4, 4};
+    cout << "Majority element is: " << majorityElement(arr) << endl;
+    return 0;
+}
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+using namespace std;
+
+/*
+Problem Statement:
+Given two arrays, find the intersection of these two arrays. 
+The intersection consists of elements that are common in both arrays.
+*/
+
+vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+    unordered_set<int> set1(nums1.begin(), nums1.end());
+    unordered_set<int> result;
+    
+    for (int num : nums2) {
+        if (set1.find(num) != set1.end()) {
+            result.insert(num);
+        }
+    }
+    
+    return vector<int>(result.begin(), result.end());
+}
+
+int main() {
+    vector<int> arr1 = {1, 2, 2, 1};
+    vector<int> arr2 = {2, 2};
+    vector<int> res = intersection(arr1, arr2);
+    
+    cout << "Intersection: ";
+    for (int num : res) cout << num << " ";
+    cout << endl;
+    
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+/*
+Problem Statement:
+Given an integer array, find the contiguous subarray (containing at least one number) 
+which has the largest sum.
+*/
+
+int maxSubArray(vector<int>& nums) {
+    int maxSum = nums[0], currentSum = nums[0];
+    
+    for (int i = 1; i < nums.size(); i++) {
+        currentSum = max(nums[i], currentSum + nums[i]);
+        maxSum = max(maxSum, currentSum);
+    }
+    
+    return maxSum;
+}
+
+int main() {
+    vector<int> arr = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+    cout << "Maximum subarray sum is: " << maxSubArray(arr) << endl;
+    return 0;
+}
+
+
+
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+/*
+Problem Statement:
+Write a function that checks whether a string is a palindrome. 
+A palindrome is a word, phrase, or sequence that reads the same backwards as forwards.
+Ignore spaces, punctuation, and capitalization.
+*/
+
+bool isPalindrome(string s) {
+    string cleaned = "";
+    
+    // Remove non-alphanumeric characters and convert to lowercase
+    for (char c : s) {
+        if (isalnum(c)) {
+            cleaned += tolower(c);
+        }
+    }
+    
+    int left = 0, right = cleaned.size() - 1;
+    while (left < right) {
+        if (cleaned[left] != cleaned[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    
+    return true;
+}
+
+int main() {
+    string str = "A man, a plan, a canal, Panama";
+    cout << (isPalindrome(str) ? "Palindrome" : "Not a palindrome") << endl;
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+Problem Statement:
+Given a matrix, return all the elements of the matrix in spiral order.
+*/
+
+vector<int> spiralOrder(vector<vector<int>>& matrix) {
+    vector<int> result;
+    if (matrix.empty()) return result;
+    
+    int top = 0, left = 0, bottom = matrix.size() - 1, right = matrix[0].size() - 1;
+    
+    while (top <= bottom && left <= right) {
+        // Traverse from left to right
+        for (int i = left; i <= right; i++) result.push_back(matrix[top][i]);
+        top++;
+        
+        // Traverse from top to bottom
+        for (int i = top; i <= bottom; i++) result.push_back(matrix[i][right]);
+        right--;
+        
+        if (top <= bottom) {
+            // Traverse from right to left
+            for (int i = right; i >= left; i--) result.push_back(matrix[bottom][i]);
+            bottom--;
+        }
+        
+        if (left <= right) {
+            // Traverse from bottom to top
+            for (int i = bottom; i >= top; i--) result.push_back(matrix[i][left]);
+            left++;
+        }
+    }
+    
+    return result;
+}
+
+int main() {
+    vector<vector<int>> matrix = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    vector<int> res = spiralOrder(matrix);
+    
+    cout << "Spiral order: ";
+    for (int num : res) cout << num << " ";
+    cout << endl;
+    
+    return 0;
+}
+
+
+
+
+
+
+#include <iostream>
+using namespace std;
+
+/*
+Problem Statement:
+Convert a Binary Search Tree (BST) to a sorted doubly linked list in-place. 
+The left and right pointers in the tree should act as the previous and next pointers in the list.
+*/
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+TreeNode* prev = NULL;
+TreeNode* head = NULL;
+
+void inorder(TreeNode* root) {
+    if (!root) return;
+    
+    inorder(root->left);
+    
+    if (prev == NULL) head = root;
+    else prev->right = root;
+    
+    root->left = prev;
+    prev = root;
+    
+    inorder(root->right);
+}
+
+TreeNode* flattenBSTToDLL(TreeNode* root) {
+    inorder(root);
+    return head;
+}
+
+int main() {
+    TreeNode* root = new TreeNode(4);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(6);
+    root->left->left = new TreeNode(1);
+    root->left->right = new TreeNode(3);
+    root->right->left = new TreeNode(5);
+    root->right->right = new TreeNode(7);
+    
+    TreeNode* dll = flattenBSTToDLL(root);
+    
+    cout << "Doubly Linked List: ";
+    while (dll) {
+        cout << dll->val << " ";
+        dll = dll->right;
+    }
+    cout << endl;
+    
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Class and Objects
+A class is a user-defined data type that encapsulates data and functions operating on it. Constructors initialize the class objects when created, and destructors clean up resources when objects are destroyed. This program demonstrates a simple class for managing student details, including a constructor, destructor, and a user-defined function to display information.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Student {
+    string name;
+    int roll;
+
+public:
+    // Constructor
+    Student(string n, int r) {
+        name = n;
+        roll = r;
+        cout << "Constructor called: Student created." << endl;
+    }
+
+    // User-defined function to display details
+    void displayDetails() {
+        cout << "Name: " << name << ", Roll: " << roll << endl;
+    }
+
+    // Destructor
+    ~Student() {
+        cout << "Destructor called: Student object destroyed." << endl;
+    }
+};
+
+int main() {
+    Student s1("John", 101);
+    s1.displayDetails();
+
+    return 0;
+}
+
+
+
+
+
+
+
+/*
+Concept: Constructor Types
+Constructors are special member functions used to initialize objects. There are different types of constructors: default (no parameters), parameterized (with parameters), and copy constructors (create a new object as a copy of another). This program demonstrates these types using a Rectangle class.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Rectangle {
+    int length, breadth;
+
+public:
+    // Default constructor
+    Rectangle() : length(0), breadth(0) {}
+
+    // Parameterized constructor
+    Rectangle(int l, int b) : length(l), breadth(b) {}
+
+    // Copy constructor
+    Rectangle(const Rectangle& rect) : length(rect.length), breadth(rect.breadth) {}
+
+    // Function to calculate area
+    int area() { return length * breadth; }
+
+    // Function to display dimensions
+    void display() { cout << "Length: " << length << ", Breadth: " << breadth << endl; }
+};
+
+int main() {
+    Rectangle r1; // Default constructor
+    Rectangle r2(5, 10); // Parameterized constructor
+    Rectangle r3(r2); // Copy constructor
+
+    r1.display();
+    r2.display();
+    r3.display();
+
+    cout << "Area of r2: " << r2.area() << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+/*
+Concept: Operator Overloading
+Operator overloading allows defining custom behavior for operators when used with user-defined types. This program demonstrates overloading the '+' operator to add two complex numbers, enabling intuitive usage of the operator with objects.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Complex {
+    int real, imag;
+
+public:
+    // Parameterized constructor
+    Complex(int r = 0, int i = 0) : real(r), imag(i) {}
+
+    // Overloading the '+' operator
+    Complex operator+(const Complex& c) {
+        return Complex(real + c.real, imag + c.imag);
+    }
+
+    // Function to display the complex number
+    void display() { cout << real << " + " << imag << "i" << endl; }
+};
+
+int main() {
+    Complex c1(3, 4), c2(1, 2);
+
+    Complex c3 = c1 + c2; // Using overloaded '+' operator
+
+    cout << "First complex number: ";
+    c1.display();
+
+    cout << "Second complex number: ";
+    c2.display();
+
+    cout << "Sum: ";
+    c3.display();
+
+    return 0;
+}
+
+
+
+
+
+/*
+Concept: Dynamic Memory
+Dynamic memory allocation in C++ uses `new` and `delete` operators to allocate and deallocate memory at runtime. Pointers store memory addresses and references provide an alias for a variable. This program demonstrates these concepts with dynamic memory allocation and cleanup.
+*/
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int* ptr = new int; // Allocate memory for an integer
+    *ptr = 42;         // Assign value to dynamically allocated memory
+
+    cout << "Value stored in dynamically allocated memory: " << *ptr << endl;
+
+    delete ptr; // Free allocated memory
+    cout << "Memory deallocated successfully." << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*
+Concept: Function Types, Friend Class
+In C++, member functions can have different types, such as static member functions and inline functions. A `friend class` is a class that is allowed access to the private and protected members of another class. This program demonstrates these concepts by defining a `Student` class with static functions, inline functions, and a friend class `Teacher` that accesses private data of the `Student` class.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Student; // Forward declaration
+
+class Teacher {
+public:
+    void displayStudentDetails(const Student& s);
+};
+
+class Student {
+    string name;
+    int roll;
+
+public:
+    // Constructor
+    Student(string n, int r) : name(n), roll(r) {}
+
+    // Static function
+    static void schoolInfo() {
+        cout << "This is a school." << endl;
+    }
+
+    // Inline function to display details
+    inline void displayDetails() {
+        cout << "Name: " << name << ", Roll: " << roll << endl;
+    }
+
+    // Granting access to the Teacher class
+    friend class Teacher;
+};
+
+void Teacher::displayStudentDetails(const Student& s) {
+    cout << "Teacher accessing student details:" << endl;
+    cout << "Name: " << s.name << ", Roll: " << s.roll << endl;
+}
+
+int main() {
+    Student s1("John", 101);
+    Teacher t1;
+
+    // Accessing static function
+    Student::schoolInfo();
+
+    // Using inline function to display student details
+    s1.displayDetails();
+
+    // Teacher accessing private details using friend class
+    t1.displayStudentDetails(s1);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*
+Concept: Inheritance
+Inheritance allows a class (derived class) to inherit the properties and behaviors of another class (base class). This promotes reusability and modular design. In this program, different types of inheritance (single, multiple, and multilevel) are demonstrated using a simple class hierarchy for a `Vehicle` and `Car` class.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Vehicle {
+protected:
+    string brand;
+
+public:
+    Vehicle(string b) : brand(b) {}
+
+    void display() {
+        cout << "Vehicle Brand: " << brand << endl;
+    }
+};
+
+class Car : public Vehicle {
+    int speed;
+
+public:
+    Car(string b, int s) : Vehicle(b), speed(s) {}
+
+    void display() {
+        Vehicle::display();
+        cout << "Car Speed: " << speed << " km/h" << endl;
+    }
+};
+
+class SportsCar : public Car {
+    string model;
+
+public:
+    SportsCar(string b, int s, string m) : Car(b, s), model(m) {}
+
+    void display() {
+        Car::display();
+        cout << "Sports Car Model: " << model << endl;
+    }
+};
+
+int main() {
+    SportsCar sc("Ferrari", 200, "488 Spider");
+    sc.display(); // Demonstrating multilevel inheritance
+
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Polymorphism
+Polymorphism is the ability of a class to take on many forms. It allows a derived class to override methods of its base class. In this program, polymorphism is demonstrated through function overriding (runtime polymorphism) by defining a `Shape` class and its derived classes `Circle` and `Rectangle`, each implementing their own version of the `area` function.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void area() = 0; // Pure virtual function, making Shape an abstract class
+};
+
+class Circle : public Shape {
+    int radius;
+
+public:
+    Circle(int r) : radius(r) {}
+
+    void area() {
+        cout << "Circle Area: " << 3.14 * radius * radius << endl;
+    }
+};
+
+class Rectangle : public Shape {
+    int length, breadth;
+
+public:
+    Rectangle(int l, int b) : length(l), breadth(b) {}
+
+    void area() {
+        cout << "Rectangle Area: " << length * breadth << endl;
+    }
+};
+
+int main() {
+    Shape* shape1 = new Circle(5);
+    Shape* shape2 = new Rectangle(4, 6);
+
+    shape1->area(); // Circle's area function
+    shape2->area(); // Rectangle's area function
+
+    delete shape1;
+    delete shape2;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*
+Concept: Exception Handling
+Exception handling in C++ is done using try, catch, and throw keywords. It helps handle runtime errors and provides a mechanism to recover from unexpected situations. This program demonstrates a simple example of exception handling for dividing two numbers.
+*/
+
+#include <iostream>
+using namespace std;
+
+class DivideByZeroException : public exception {
+public:
+    const char* what() const throw() {
+        return "Division by zero is not allowed!";
+    }
+};
+
+double divide(int a, int b) {
+    if (b == 0) {
+        throw DivideByZeroException();
+    }
+    return static_cast<double>(a) / b;
+}
+
+int main() {
+    try {
+        cout << "Result: " << divide(10, 0) << endl; // Division by zero
+    }
+    catch (const DivideByZeroException& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+/*
+Concept: std::move in Utility
+`std::move` is used in C++ to enable efficient transfer of resources from one object to another without copying. It allows an object to be moved instead of copied, improving performance in some scenarios. This program demonstrates how `std::move` can be used to move resources between two objects.
+*/
+
+#include <iostream>
+#include <utility> // For std::move
+using namespace std;
+
+class Data {
+    int* ptr;
+
+public:
+    Data(int val) : ptr(new int(val)) {}
+    
+    // Move constructor
+    Data(Data&& other) noexcept : ptr(other.ptr) {
+        other.ptr = nullptr; // Null out the original pointer
+    }
+
+    // Destructor
+    ~Data() { delete ptr; }
+
+    void display() {
+        if (ptr) {
+            cout << "Value: " << *ptr << endl;
+        }
+    }
+};
+
+int main() {
+    Data d1(100);
+    Data d2 = std::move(d1); // Using std::move to transfer ownership
+
+    d2.display();
+    // d1 no longer owns the resource, so displaying it would be undefined
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+/*
+Concept: Templates
+Templates in C++ allow writing generic functions and classes that can work with any data type. The program demonstrates both function and class templates to show how they can be reused with different data types.
+*/
+
+#include <iostream>
+using namespace std;
+
+// Function template to find the maximum of two numbers
+template <typename T>
+T max(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// Class template for Pair
+template <typename T>
+class Pair {
+    T x, y;
+
+public:
+    Pair(T a, T b) : x(a), y(b) {}
+
+    void display() {
+        cout << "Pair: (" << x << ", " << y << ")" << endl;
+    }
+};
+
+int main() {
+    cout << "Max of 3 and 7: " << max(3, 7) << endl;
+    cout << "Max of 3.5 and 2.5: " << max(3.5, 2.5) << endl;
+
+    Pair<int> p1(10, 20);
+    Pair<string> p2("Hello", "World");
+
+    p1.display();
+    p2.display();
+
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Standard Template Library (STL)
+STL provides a collection of generic classes and functions for data structures such as vectors, lists, and others. In this program, we demonstrate the use of `std::list` and `std::vector` as containers to store and manipulate data.
+*/
+
+#include <iostream>
+#include <list>
+#include <vector>
+using namespace std;
+
+int main() {
+    // Demonstrating list (doubly linked list)
+    list<int> numbers = {1, 2, 3, 4, 5};
+    numbers.push_back(6);
+    numbers.push_front(0);
+
+    cout << "List elements: ";
+    for (int num : numbers) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    // Demonstrating vector (dynamic array)
+    vector<int> vec = {10, 20, 30};
+    vec.push_back(40);
+
+    cout << "Vector elements: ";
+    for (int num : vec) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+/*
+Concept: Type Casting
+Type casting in C++ allows converting one data type to another. Implicit casting happens automatically, while explicit casting requires the programmer to indicate the conversion. This program demonstrates both types of casting using different types of variables.
+*/
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    double d = 9.5;
+    int i = static_cast<int>(d);  // Explicit casting
+
+    cout << "Double value: " << d << endl;
+    cout << "After explicit casting to int: " << i << endl;
+
+    // Implicit casting
+    float f = i;  // Implicit casting from int to float
+    cout << "After implicit casting to float: " << f << endl;
+
+    return 0;
+}
+
+
+
